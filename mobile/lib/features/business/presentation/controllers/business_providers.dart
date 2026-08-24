@@ -1,0 +1,10 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/repositories/business_repository_impl.dart';
+import '../../domain/entities/business.dart';
+final selectedCategoryProvider = StateProvider<String?>((ref) => null);
+final searchQueryProvider = StateProvider<String>((ref) => '');
+final queueLengthFilterProvider = StateProvider<String?>((ref) => null);
+final businessCategoriesProvider = FutureProvider<List<BusinessCategory>>((ref) => ref.watch(businessRepositoryProvider).getCategories());
+final businessListProvider = FutureProvider.autoDispose<List<Business>>((ref) => ref.watch(businessRepositoryProvider).getBusinesses(search: ref.watch(searchQueryProvider), category: ref.watch(selectedCategoryProvider), queueLength: ref.watch(queueLengthFilterProvider)));
+final nearbyBusinessesProvider = FutureProvider.autoDispose<List<Business>>((ref) => ref.watch(businessRepositoryProvider).getNearbyBusinesses());
+final businessDetailProvider = FutureProvider.autoDispose.family<Business, String>((ref, id) => ref.watch(businessRepositoryProvider).getBusiness(id));
