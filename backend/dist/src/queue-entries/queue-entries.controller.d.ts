@@ -115,4 +115,58 @@ export declare class QueueEntriesController {
             };
         } | undefined;
     }>;
+    callNext(user: AuthenticatedUser, queueId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: import("../generated/prisma/enums").QueueEntrySource;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    callEntry(user: AuthenticatedUser, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: import("../generated/prisma/enums").QueueEntrySource;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    startService(user: AuthenticatedUser, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: import("../generated/prisma/enums").QueueEntrySource;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    completeService(user: AuthenticatedUser, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: import("../generated/prisma/enums").QueueEntrySource;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    markNoShow(user: AuthenticatedUser, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: import("../generated/prisma/enums").QueueEntrySource;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    skipEntry(user: AuthenticatedUser, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: import("../generated/prisma/enums").QueueEntrySource;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+    }>;
 }

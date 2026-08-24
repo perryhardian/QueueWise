@@ -47,4 +47,46 @@ export class QueueEntriesController {
   walkIn(@CurrentUser() user: AuthenticatedUser, @Param('queueId') queueId: string, @Body() dto: WalkInDto) {
     return this.queueEntriesService.addWalkIn(user.id, queueId, dto);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Post('merchant/queues/:queueId/call-next')
+  callNext(@CurrentUser() user: AuthenticatedUser, @Param('queueId') queueId: string) {
+    return this.queueEntriesService.callNext(user.id, queueId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Post('merchant/queue-entries/:entryId/call')
+  callEntry(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string) {
+    return this.queueEntriesService.callEntry(user.id, entryId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Post('merchant/queue-entries/:entryId/start')
+  startService(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string) {
+    return this.queueEntriesService.startService(user.id, entryId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Post('merchant/queue-entries/:entryId/complete')
+  completeService(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string) {
+    return this.queueEntriesService.completeService(user.id, entryId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Post('merchant/queue-entries/:entryId/no-show')
+  markNoShow(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string) {
+    return this.queueEntriesService.markNoShow(user.id, entryId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Post('merchant/queue-entries/:entryId/skip')
+  skipEntry(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string) {
+    return this.queueEntriesService.skipEntry(user.id, entryId);
+  }
 }

@@ -32,6 +32,15 @@ let QueuesController = class QueuesController {
     getQueueStatus(queueId) {
         return this.queuesService.getQueueStatus(queueId);
     }
+    getMerchantQueues(user) {
+        return this.queuesService.getMerchantQueues(user.id);
+    }
+    getMerchantDashboard(user, queueId) {
+        return this.queuesService.getMerchantDashboard(user.id, queueId);
+    }
+    getMerchantQueueEntries(user, queueId) {
+        return this.queuesService.getMerchantQueueEntries(user.id, queueId);
+    }
     openQueue(user, businessId, dto) {
         return this.queuesService.openQueue(user.id, businessId, dto);
     }
@@ -57,6 +66,35 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], QueuesController.prototype, "getQueueStatus", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Get)('merchant/queues'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], QueuesController.prototype, "getMerchantQueues", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Get)('merchant/queues/:queueId/dashboard'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('queueId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueuesController.prototype, "getMerchantDashboard", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Get)('merchant/queues/:queueId/entries'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('queueId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueuesController.prototype, "getMerchantQueueEntries", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),

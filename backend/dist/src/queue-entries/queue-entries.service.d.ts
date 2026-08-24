@@ -117,5 +117,62 @@ export declare class QueueEntriesService {
             };
         } | undefined;
     }>;
+    callNext(userId: string, queueId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: QueueEntrySource;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    callEntry(userId: string, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: QueueEntrySource;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    startService(userId: string, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: QueueEntrySource;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    completeService(userId: string, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: QueueEntrySource;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    markNoShow(userId: string, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: QueueEntrySource;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    skipEntry(userId: string, entryId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: QueueEntrySource;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+    }>;
+    private assertMerchantOwnsEntry;
+    private calculateAverageServiceMinutes;
+    private toMerchantQueueEntry;
     private toActiveQueueEntry;
 }

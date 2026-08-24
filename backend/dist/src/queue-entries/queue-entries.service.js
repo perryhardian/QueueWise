@@ -92,6 +92,84 @@ let QueueEntriesService = class QueueEntriesService {
         const peopleAhead = await this.prisma.queueEntry.count({ where: { queueId: updated.queueId, sequenceNumber: { lt: updated.sequenceNumber }, status: { in: queue_calculation_util_1.activeQueueEntryStatuses } } });
         return this.toActiveQueueEntry(updated, updated.queue.currentNumber, peopleAhead, updated.queue.averageServiceTimeMinutes, updated.queue.business);
     }
+    async callNext(userId, queueId) {
+        await this.queuesService.assertMerchantOwnsQueue(userId, queueId);
+        return this.prisma.$transaction(async (tx) => {
+            const queue = await tx.queue.findUnique({ where: { id: queueId } });
+            if (!queue)
+                throw new common_1.NotFoundException('Queue not found');
+            if (queue.status !== enums_1.QueueStatus.OPEN)
+                throw new common_1.BadRequestException('Queue is not open');
+            const activeCalled = await tx.queueEntry.findFirst({ where: { queueId, status: enums_1.QueueEntryStatus.CALLED }, orderBy: { sequenceNumber: 'asc' } });
+            if (activeCalled)
+                return this.toMerchantQueueEntry(activeCalled);
+            const nextEntry = await tx.queueEntry.findFirst({ where: { queueId, status: { in: [enums_1.QueueEntryStatus.CHECKED_IN, enums_1.QueueEntryStatus.WAITING] } }, orderBy: [{ status: 'asc' }, { sequenceNumber: 'asc' }] });
+            if (!nextEntry)
+                throw new common_1.NotFoundException('No waiting customers available');
+            const updated = await tx.queueEntry.update({ where: { id: nextEntry.id }, data: { status: enums_1.QueueEntryStatus.CALLED, calledAt: new Date() } });
+            await tx.queue.update({ where: { id: queueId }, data: { currentNumber: updated.queueNumber } });
+            return this.toMerchantQueueEntry(updated);
+        });
+    }
+    async callEntry(userId, entryId) {
+        const entry = await this.assertMerchantOwnsEntry(userId, entryId);
+        if (entry.status !== enums_1.QueueEntryStatus.WAITING && entry.status !== enums_1.QueueEntryStatus.CHECKED_IN)
+            throw new common_1.BadRequestException('Only waiting or checked-in customers can be called');
+        const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: enums_1.QueueEntryStatus.CALLED, calledAt: new Date() } });
+        await this.prisma.queue.update({ where: { id: entry.queueId }, data: { currentNumber: updated.queueNumber } });
+        return this.toMerchantQueueEntry(updated);
+    }
+    async startService(userId, entryId) {
+        const entry = await this.assertMerchantOwnsEntry(userId, entryId);
+        if (entry.status !== enums_1.QueueEntryStatus.CALLED)
+            throw new common_1.BadRequestException('Only called customers can start service');
+        const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: enums_1.QueueEntryStatus.SERVING, serviceStartedAt: new Date() } });
+        await this.prisma.queue.update({ where: { id: entry.queueId }, data: { currentNumber: updated.queueNumber } });
+        return this.toMerchantQueueEntry(updated);
+    }
+    async completeService(userId, entryId) {
+        const entry = await this.assertMerchantOwnsEntry(userId, entryId);
+        if (entry.status !== enums_1.QueueEntryStatus.SERVING)
+            throw new common_1.BadRequestException('Only serving customers can be completed');
+        return this.prisma.$transaction(async (tx) => {
+            const completed = await tx.queueEntry.update({ where: { id: entryId }, data: { status: enums_1.QueueEntryStatus.COMPLETED, completedAt: new Date() } });
+            const completedDurations = await tx.queueEntry.findMany({ where: { queueId: entry.queueId, status: enums_1.QueueEntryStatus.COMPLETED, serviceStartedAt: { not: null }, completedAt: { not: null } }, select: { serviceStartedAt: true, completedAt: true } });
+            const average = this.calculateAverageServiceMinutes(completedDurations, entry.queue.averageServiceTimeMinutes);
+            await tx.queue.update({ where: { id: entry.queueId }, data: { averageServiceTimeMinutes: average } });
+            return this.toMerchantQueueEntry(completed);
+        });
+    }
+    async markNoShow(userId, entryId) {
+        const entry = await this.assertMerchantOwnsEntry(userId, entryId);
+        if (entry.status !== enums_1.QueueEntryStatus.CALLED && entry.status !== enums_1.QueueEntryStatus.WAITING && entry.status !== enums_1.QueueEntryStatus.CHECKED_IN)
+            throw new common_1.BadRequestException('This customer cannot be marked no-show');
+        const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: enums_1.QueueEntryStatus.NO_SHOW, noShowAt: new Date() } });
+        return this.toMerchantQueueEntry(updated);
+    }
+    async skipEntry(userId, entryId) {
+        return this.markNoShow(userId, entryId);
+    }
+    async assertMerchantOwnsEntry(userId, entryId) {
+        const entry = await this.prisma.queueEntry.findUnique({ where: { id: entryId }, include: { queue: { include: { business: { include: { merchant: true } } } } } });
+        if (!entry)
+            throw new common_1.NotFoundException('Queue entry not found');
+        if (entry.queue.business.merchant.userId !== userId)
+            throw new common_1.ForbiddenException('You do not manage this queue entry');
+        return entry;
+    }
+    calculateAverageServiceMinutes(entries, fallback) {
+        const durations = entries.flatMap((entry) => {
+            if (!entry.serviceStartedAt || !entry.completedAt)
+                return [];
+            return [Math.max(1, Math.round((entry.completedAt.getTime() - entry.serviceStartedAt.getTime()) / 60000))];
+        });
+        if (!durations.length)
+            return fallback;
+        return Math.round(durations.reduce((sum, duration) => sum + duration, 0) / durations.length);
+    }
+    toMerchantQueueEntry(entry) {
+        return { id: entry.id, queueId: entry.queueId, queueNumber: entry.queueNumber, sequenceNumber: entry.sequenceNumber, source: entry.source, status: entry.status, joinedAt: entry.joinedAt };
+    }
     toActiveQueueEntry(entry, currentNumber, peopleAhead, averageServiceTimeMinutes, business) {
         return {
             id: entry.id,
@@ -104,9 +182,7 @@ let QueueEntriesService = class QueueEntriesService {
             nowServing: currentNumber,
             peopleAhead,
             estimatedWaitingTimeMinutes: (0, queue_calculation_util_1.estimateWaitMinutes)(peopleAhead, averageServiceTimeMinutes),
-            business: business
-                ? { id: business.id, name: business.name, address: business.address, category: business.category }
-                : undefined,
+            business: business ? { id: business.id, name: business.name, address: business.address, category: business.category } : undefined,
         };
     }
 };
