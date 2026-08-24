@@ -51,6 +51,56 @@ export declare class QueuesService {
             joinedAt: Date;
         }[];
     }>;
+    getMerchantDashboard(userId: string, queueId: string): Promise<{
+        queue: {
+            id: string;
+            businessId: string;
+            status: QueueStatus;
+            openedAt: Date | null;
+            closedAt: Date | null;
+        };
+        business: {
+            id: string;
+            name: string;
+            address: string;
+        };
+        nowServing: string | null;
+        waitingCount: number;
+        checkedInCount: number;
+        completedCount: number;
+        averageServiceTimeMinutes: number;
+        estimatedWaitingTimeMinutes: number;
+        entries: {
+            id: string;
+            queueId: string;
+            queueNumber: string;
+            sequenceNumber: number;
+            source: string;
+            status: QueueEntryStatus;
+            joinedAt: Date;
+            checkedInAt: Date | null;
+            calledAt: Date | null;
+            serviceStartedAt: Date | null;
+            completedAt: Date | null;
+            cancelledAt: Date | null;
+            noShowAt: Date | null;
+        }[];
+    }>;
+    getMerchantQueueEntries(userId: string, queueId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: string;
+        status: QueueEntryStatus;
+        joinedAt: Date;
+        checkedInAt: Date | null;
+        calledAt: Date | null;
+        serviceStartedAt: Date | null;
+        completedAt: Date | null;
+        cancelledAt: Date | null;
+        noShowAt: Date | null;
+    }[]>;
     openQueue(userId: string, businessId: string, dto: OpenQueueDto): Promise<{
         queue: {
             id: string;
@@ -192,6 +242,8 @@ export declare class QueuesService {
             joinedAt: Date;
         }[];
     };
+    private findOwnedQueueWithEntries;
+    private toMerchantQueueEntry;
 }
 type QueueWithEntries = {
     id: string;

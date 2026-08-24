@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import type { AuthenticatedUser } from '../auth/auth.types';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
-import type { AuthenticatedUser } from '../auth/auth.types';
 import { Role } from '../generated/prisma/enums';
 import { OpenQueueDto } from './dto/open-queue.dto';
 import { QueuesService } from './queues.service';
@@ -20,6 +20,20 @@ export class QueuesController {
   @Get('queues/:queueId/status')
   getQueueStatus(@Param('queueId') queueId: string) {
     return this.queuesService.getQueueStatus(queueId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Get('merchant/queues/:queueId/dashboard')
+  getMerchantDashboard(@CurrentUser() user: AuthenticatedUser, @Param('queueId') queueId: string) {
+    return this.queuesService.getMerchantDashboard(user.id, queueId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
+  @Get('merchant/queues/:queueId/entries')
+  getMerchantQueueEntries(@CurrentUser() user: AuthenticatedUser, @Param('queueId') queueId: string) {
+    return this.queuesService.getMerchantQueueEntries(user.id, queueId);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

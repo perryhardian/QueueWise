@@ -51,6 +51,56 @@ export declare class QueuesController {
             joinedAt: Date;
         }[];
     }>;
+    getMerchantDashboard(user: AuthenticatedUser, queueId: string): Promise<{
+        queue: {
+            id: string;
+            businessId: string;
+            status: import("../generated/prisma/enums").QueueStatus;
+            openedAt: Date | null;
+            closedAt: Date | null;
+        };
+        business: {
+            id: string;
+            name: string;
+            address: string;
+        };
+        nowServing: string | null;
+        waitingCount: number;
+        checkedInCount: number;
+        completedCount: number;
+        averageServiceTimeMinutes: number;
+        estimatedWaitingTimeMinutes: number;
+        entries: {
+            id: string;
+            queueId: string;
+            queueNumber: string;
+            sequenceNumber: number;
+            source: string;
+            status: import("../generated/prisma/enums").QueueEntryStatus;
+            joinedAt: Date;
+            checkedInAt: Date | null;
+            calledAt: Date | null;
+            serviceStartedAt: Date | null;
+            completedAt: Date | null;
+            cancelledAt: Date | null;
+            noShowAt: Date | null;
+        }[];
+    }>;
+    getMerchantQueueEntries(user: AuthenticatedUser, queueId: string): Promise<{
+        id: string;
+        queueId: string;
+        queueNumber: string;
+        sequenceNumber: number;
+        source: string;
+        status: import("../generated/prisma/enums").QueueEntryStatus;
+        joinedAt: Date;
+        checkedInAt: Date | null;
+        calledAt: Date | null;
+        serviceStartedAt: Date | null;
+        completedAt: Date | null;
+        cancelledAt: Date | null;
+        noShowAt: Date | null;
+    }[]>;
     openQueue(user: AuthenticatedUser, businessId: string, dto: OpenQueueDto): Promise<{
         queue: {
             id: string;

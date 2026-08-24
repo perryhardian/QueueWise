@@ -42,6 +42,24 @@ let QueueEntriesController = class QueueEntriesController {
     walkIn(user, queueId, dto) {
         return this.queueEntriesService.addWalkIn(user.id, queueId, dto);
     }
+    callNext(user, queueId) {
+        return this.queueEntriesService.callNext(user.id, queueId);
+    }
+    callEntry(user, entryId) {
+        return this.queueEntriesService.callEntry(user.id, entryId);
+    }
+    startService(user, entryId) {
+        return this.queueEntriesService.startService(user.id, entryId);
+    }
+    completeService(user, entryId) {
+        return this.queueEntriesService.completeService(user.id, entryId);
+    }
+    markNoShow(user, entryId) {
+        return this.queueEntriesService.markNoShow(user.id, entryId);
+    }
+    skipEntry(user, entryId) {
+        return this.queueEntriesService.skipEntry(user.id, entryId);
+    }
 };
 exports.QueueEntriesController = QueueEntriesController;
 __decorate([
@@ -95,6 +113,66 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, walk_in_dto_1.WalkInDto]),
     __metadata("design:returntype", void 0)
 ], QueueEntriesController.prototype, "walkIn", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Post)('merchant/queues/:queueId/call-next'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('queueId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueueEntriesController.prototype, "callNext", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Post)('merchant/queue-entries/:entryId/call'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('entryId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueueEntriesController.prototype, "callEntry", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Post)('merchant/queue-entries/:entryId/start'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('entryId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueueEntriesController.prototype, "startService", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Post)('merchant/queue-entries/:entryId/complete'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('entryId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueueEntriesController.prototype, "completeService", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Post)('merchant/queue-entries/:entryId/no-show'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('entryId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueueEntriesController.prototype, "markNoShow", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(enums_1.Role.MERCHANT),
+    (0, common_1.Post)('merchant/queue-entries/:entryId/skip'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('entryId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], QueueEntriesController.prototype, "skipEntry", null);
 exports.QueueEntriesController = QueueEntriesController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [queue_entries_service_1.QueueEntriesService])
