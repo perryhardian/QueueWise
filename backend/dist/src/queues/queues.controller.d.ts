@@ -51,6 +51,31 @@ export declare class QueuesController {
             joinedAt: Date;
         }[];
     }>;
+    getMerchantQueues(user: AuthenticatedUser): Promise<{
+        business: {
+            id: string;
+            name: string;
+            address: string;
+        };
+        queue: {
+            id: string;
+            businessId: string;
+            status: import("../generated/prisma/enums").QueueStatus;
+        };
+        status: import("../generated/prisma/enums").QueueStatus;
+        currentNumber: string | null;
+        peopleWaiting: number;
+        estimatedWaitingTimeMinutes: number;
+        averageServiceTimeMinutes: number;
+        entries: {
+            id: string;
+            queueNumber: string;
+            sequenceNumber: number;
+            source: string;
+            status: import("../generated/prisma/enums").QueueEntryStatus;
+            joinedAt: Date;
+        }[];
+    }[]>;
     getMerchantDashboard(user: AuthenticatedUser, queueId: string): Promise<{
         queue: {
             id: string;

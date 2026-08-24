@@ -9,7 +9,7 @@ import '../../features/business/presentation/screens/business_detail_screen.dart
 import '../../features/business/presentation/screens/explore_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
 import '../../features/home/presentation/screens/customer_home_screen.dart';
-import '../../features/merchant/presentation/screens/merchant_dashboard_placeholder_screen.dart';
+import '../../features/merchant/presentation/screens/merchant_dashboard_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/queue/presentation/screens/my_queue_screen.dart';
 import '../../features/queue/presentation/screens/queue_confirmation_screen.dart';
@@ -38,7 +38,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
-      GoRoute(path: '/merchant', builder: (context, state) => const MerchantDashboardPlaceholderScreen()),
+      GoRoute(path: '/merchant', builder: (context, state) => const MerchantDashboardScreen()),
       GoRoute(parentNavigatorKey: _rootNavigatorKey, path: '/businesses/:id', builder: (context, state) => BusinessDetailScreen(businessId: state.pathParameters['id']!)),
       GoRoute(parentNavigatorKey: _rootNavigatorKey, path: '/businesses/:id/confirm-queue', builder: (context, state) => QueueConfirmationScreen(businessId: state.pathParameters['id']!)),
       StatefulShellRoute.indexedStack(

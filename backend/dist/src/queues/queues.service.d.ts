@@ -101,6 +101,31 @@ export declare class QueuesService {
         cancelledAt: Date | null;
         noShowAt: Date | null;
     }[]>;
+    getMerchantQueues(userId: string): Promise<{
+        business: {
+            id: string;
+            name: string;
+            address: string;
+        };
+        queue: {
+            id: string;
+            businessId: string;
+            status: QueueStatus;
+        };
+        status: QueueStatus;
+        currentNumber: string | null;
+        peopleWaiting: number;
+        estimatedWaitingTimeMinutes: number;
+        averageServiceTimeMinutes: number;
+        entries: {
+            id: string;
+            queueNumber: string;
+            sequenceNumber: number;
+            source: string;
+            status: QueueEntryStatus;
+            joinedAt: Date;
+        }[];
+    }[]>;
     openQueue(userId: string, businessId: string, dto: OpenQueueDto): Promise<{
         queue: {
             id: string;

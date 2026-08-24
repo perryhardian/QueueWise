@@ -63,6 +63,20 @@ let QueuesService = class QueuesService {
         const queue = await this.findOwnedQueueWithEntries(userId, queueId);
         return queue.entries.map((entry) => this.toMerchantQueueEntry(entry));
     }
+    async getMerchantQueues(userId) {
+        const queues = await this.prisma.queue.findMany({
+            where: { business: { merchant: { userId } }, status: { in: [enums_1.QueueStatus.OPEN, enums_1.QueueStatus.PAUSED] } },
+            orderBy: { openedAt: 'desc' },
+            include: {
+                business: true,
+                entries: { where: { status: { in: queue_calculation_util_1.activeQueueEntryStatuses } }, orderBy: { sequenceNumber: 'asc' } },
+            },
+        });
+        return queues.map((queue) => ({
+            ...this.toQueueStatus(queue),
+            business: { id: queue.business.id, name: queue.business.name, address: queue.business.address },
+        }));
+    }
     async openQueue(userId, businessId, dto) {
         await this.assertMerchantOwnsBusiness(userId, businessId);
         return this.prisma.$transaction(async (tx) => {

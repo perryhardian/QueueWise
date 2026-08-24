@@ -24,6 +24,13 @@ export class QueuesController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.MERCHANT)
+  @Get('merchant/queues')
+  getMerchantQueues(@CurrentUser() user: AuthenticatedUser) {
+    return this.queuesService.getMerchantQueues(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
   @Get('merchant/queues/:queueId/dashboard')
   getMerchantDashboard(@CurrentUser() user: AuthenticatedUser, @Param('queueId') queueId: string) {
     return this.queuesService.getMerchantDashboard(user.id, queueId);

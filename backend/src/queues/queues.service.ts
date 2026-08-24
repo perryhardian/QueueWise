@@ -58,6 +58,21 @@ export class QueuesService {
     return queue.entries.map((entry) => this.toMerchantQueueEntry(entry));
   }
 
+  async getMerchantQueues(userId: string) {
+    const queues = await this.prisma.queue.findMany({
+      where: { business: { merchant: { userId } }, status: { in: [QueueStatus.OPEN, QueueStatus.PAUSED] } },
+      orderBy: { openedAt: 'desc' },
+      include: {
+        business: true,
+        entries: { where: { status: { in: activeQueueEntryStatuses } }, orderBy: { sequenceNumber: 'asc' } },
+      },
+    });
+
+    return queues.map((queue) => ({
+      ...this.toQueueStatus(queue),
+      business: { id: queue.business.id, name: queue.business.name, address: queue.business.address },
+    }));
+  }
   async openQueue(userId: string, businessId: string, dto: OpenQueueDto) {
     await this.assertMerchantOwnsBusiness(userId, businessId);
     return this.prisma.$transaction(async (tx) => {
