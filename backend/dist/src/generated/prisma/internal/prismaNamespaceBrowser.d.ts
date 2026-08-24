@@ -21,6 +21,7 @@ export declare const ModelName: {
     readonly DeviceToken: "DeviceToken";
     readonly Notification: "Notification";
     readonly QueueHistory: "QueueHistory";
+    readonly AuthSession: "AuthSession";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -147,6 +148,16 @@ export declare const QueueHistoryScalarFieldEnum: {
     readonly createdAt: "createdAt";
 };
 export type QueueHistoryScalarFieldEnum = (typeof QueueHistoryScalarFieldEnum)[keyof typeof QueueHistoryScalarFieldEnum];
+export declare const AuthSessionScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly refreshTokenHash: "refreshTokenHash";
+    readonly expiresAt: "expiresAt";
+    readonly revokedAt: "revokedAt";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

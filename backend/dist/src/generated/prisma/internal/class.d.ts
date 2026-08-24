@@ -60,5 +60,8 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get queueHistory(): Prisma.QueueHistoryDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    get authSession(): Prisma.AuthSessionDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(): PrismaClientConstructor;

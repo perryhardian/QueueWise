@@ -67,3 +67,8 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type QueueHistory = Prisma.QueueHistoryModel
+/**
+ * Model AuthSession
+ * 
+ */
+export type AuthSession = Prisma.AuthSessionModel

@@ -126,6 +126,7 @@ export type UserWhereInput = {
     deviceTokens?: Prisma.DeviceTokenListRelationFilter;
     notifications?: Prisma.NotificationListRelationFilter;
     histories?: Prisma.QueueHistoryListRelationFilter;
+    authSessions?: Prisma.AuthSessionListRelationFilter;
 };
 export type UserOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -141,6 +142,7 @@ export type UserOrderByWithRelationInput = {
     deviceTokens?: Prisma.DeviceTokenOrderByRelationAggregateInput;
     notifications?: Prisma.NotificationOrderByRelationAggregateInput;
     histories?: Prisma.QueueHistoryOrderByRelationAggregateInput;
+    authSessions?: Prisma.AuthSessionOrderByRelationAggregateInput;
 };
 export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
@@ -159,6 +161,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     deviceTokens?: Prisma.DeviceTokenListRelationFilter;
     notifications?: Prisma.NotificationListRelationFilter;
     histories?: Prisma.QueueHistoryListRelationFilter;
+    authSessions?: Prisma.AuthSessionListRelationFilter;
 }, "id" | "email">;
 export type UserOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -200,6 +203,7 @@ export type UserCreateInput = {
     deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateInput = {
     id?: string;
@@ -215,6 +219,7 @@ export type UserUncheckedCreateInput = {
     deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryUncheckedCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -230,6 +235,7 @@ export type UserUpdateInput = {
     deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -245,6 +251,7 @@ export type UserUncheckedUpdateInput = {
     deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUncheckedUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateManyInput = {
     id?: string;
@@ -390,6 +397,18 @@ export type UserUpdateOneWithoutHistoriesNestedInput = {
     connect?: Prisma.UserWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHistoriesInput, Prisma.UserUpdateWithoutHistoriesInput>, Prisma.UserUncheckedUpdateWithoutHistoriesInput>;
 };
+export type UserCreateNestedOneWithoutAuthSessionsInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutAuthSessionsInput, Prisma.UserUncheckedCreateWithoutAuthSessionsInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthSessionsInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneRequiredWithoutAuthSessionsNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutAuthSessionsInput, Prisma.UserUncheckedCreateWithoutAuthSessionsInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuthSessionsInput;
+    upsert?: Prisma.UserUpsertWithoutAuthSessionsInput;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthSessionsInput, Prisma.UserUpdateWithoutAuthSessionsInput>, Prisma.UserUncheckedUpdateWithoutAuthSessionsInput>;
+};
 export type UserCreateWithoutMerchantInput = {
     id?: string;
     fullName: string;
@@ -403,6 +422,7 @@ export type UserCreateWithoutMerchantInput = {
     deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutMerchantInput = {
     id?: string;
@@ -417,6 +437,7 @@ export type UserUncheckedCreateWithoutMerchantInput = {
     deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryUncheckedCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutMerchantInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -444,6 +465,7 @@ export type UserUpdateWithoutMerchantInput = {
     deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutMerchantInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -458,6 +480,7 @@ export type UserUncheckedUpdateWithoutMerchantInput = {
     deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUncheckedUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutQueueEntriesInput = {
     id?: string;
@@ -472,6 +495,7 @@ export type UserCreateWithoutQueueEntriesInput = {
     deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutQueueEntriesInput = {
     id?: string;
@@ -486,6 +510,7 @@ export type UserUncheckedCreateWithoutQueueEntriesInput = {
     deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryUncheckedCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutQueueEntriesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -513,6 +538,7 @@ export type UserUpdateWithoutQueueEntriesInput = {
     deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutQueueEntriesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -527,6 +553,7 @@ export type UserUncheckedUpdateWithoutQueueEntriesInput = {
     deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUncheckedUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutDeviceTokensInput = {
     id?: string;
@@ -541,6 +568,7 @@ export type UserCreateWithoutDeviceTokensInput = {
     queueEntries?: Prisma.QueueEntryCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutDeviceTokensInput = {
     id?: string;
@@ -555,6 +583,7 @@ export type UserUncheckedCreateWithoutDeviceTokensInput = {
     queueEntries?: Prisma.QueueEntryUncheckedCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryUncheckedCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutDeviceTokensInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -582,6 +611,7 @@ export type UserUpdateWithoutDeviceTokensInput = {
     queueEntries?: Prisma.QueueEntryUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutDeviceTokensInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -596,6 +626,7 @@ export type UserUncheckedUpdateWithoutDeviceTokensInput = {
     queueEntries?: Prisma.QueueEntryUncheckedUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUncheckedUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutNotificationsInput = {
     id?: string;
@@ -610,6 +641,7 @@ export type UserCreateWithoutNotificationsInput = {
     queueEntries?: Prisma.QueueEntryCreateNestedManyWithoutUserInput;
     deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutNotificationsInput = {
     id?: string;
@@ -624,6 +656,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
     queueEntries?: Prisma.QueueEntryUncheckedCreateNestedManyWithoutUserInput;
     deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput;
     histories?: Prisma.QueueHistoryUncheckedCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutNotificationsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -651,6 +684,7 @@ export type UserUpdateWithoutNotificationsInput = {
     queueEntries?: Prisma.QueueEntryUpdateManyWithoutUserNestedInput;
     deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutNotificationsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -665,6 +699,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
     queueEntries?: Prisma.QueueEntryUncheckedUpdateManyWithoutUserNestedInput;
     deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput;
     histories?: Prisma.QueueHistoryUncheckedUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutHistoriesInput = {
     id?: string;
@@ -679,6 +714,7 @@ export type UserCreateWithoutHistoriesInput = {
     queueEntries?: Prisma.QueueEntryCreateNestedManyWithoutUserInput;
     deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutHistoriesInput = {
     id?: string;
@@ -693,6 +729,7 @@ export type UserUncheckedCreateWithoutHistoriesInput = {
     queueEntries?: Prisma.QueueEntryUncheckedCreateNestedManyWithoutUserInput;
     deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput;
     notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+    authSessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutHistoriesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -720,6 +757,7 @@ export type UserUpdateWithoutHistoriesInput = {
     queueEntries?: Prisma.QueueEntryUpdateManyWithoutUserNestedInput;
     deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutHistoriesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -734,18 +772,94 @@ export type UserUncheckedUpdateWithoutHistoriesInput = {
     queueEntries?: Prisma.QueueEntryUncheckedUpdateManyWithoutUserNestedInput;
     deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput;
     notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+    authSessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput;
+};
+export type UserCreateWithoutAuthSessionsInput = {
+    id?: string;
+    fullName: string;
+    email: string;
+    phoneNumber?: string | null;
+    passwordHash: string;
+    role?: $Enums.Role;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    merchant?: Prisma.MerchantCreateNestedOneWithoutUserInput;
+    queueEntries?: Prisma.QueueEntryCreateNestedManyWithoutUserInput;
+    deviceTokens?: Prisma.DeviceTokenCreateNestedManyWithoutUserInput;
+    notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+    histories?: Prisma.QueueHistoryCreateNestedManyWithoutUserInput;
+};
+export type UserUncheckedCreateWithoutAuthSessionsInput = {
+    id?: string;
+    fullName: string;
+    email: string;
+    phoneNumber?: string | null;
+    passwordHash: string;
+    role?: $Enums.Role;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    merchant?: Prisma.MerchantUncheckedCreateNestedOneWithoutUserInput;
+    queueEntries?: Prisma.QueueEntryUncheckedCreateNestedManyWithoutUserInput;
+    deviceTokens?: Prisma.DeviceTokenUncheckedCreateNestedManyWithoutUserInput;
+    notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+    histories?: Prisma.QueueHistoryUncheckedCreateNestedManyWithoutUserInput;
+};
+export type UserCreateOrConnectWithoutAuthSessionsInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutAuthSessionsInput, Prisma.UserUncheckedCreateWithoutAuthSessionsInput>;
+};
+export type UserUpsertWithoutAuthSessionsInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutAuthSessionsInput, Prisma.UserUncheckedUpdateWithoutAuthSessionsInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutAuthSessionsInput, Prisma.UserUncheckedCreateWithoutAuthSessionsInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutAuthSessionsInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutAuthSessionsInput, Prisma.UserUncheckedUpdateWithoutAuthSessionsInput>;
+};
+export type UserUpdateWithoutAuthSessionsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    merchant?: Prisma.MerchantUpdateOneWithoutUserNestedInput;
+    queueEntries?: Prisma.QueueEntryUpdateManyWithoutUserNestedInput;
+    deviceTokens?: Prisma.DeviceTokenUpdateManyWithoutUserNestedInput;
+    notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+    histories?: Prisma.QueueHistoryUpdateManyWithoutUserNestedInput;
+};
+export type UserUncheckedUpdateWithoutAuthSessionsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    merchant?: Prisma.MerchantUncheckedUpdateOneWithoutUserNestedInput;
+    queueEntries?: Prisma.QueueEntryUncheckedUpdateManyWithoutUserNestedInput;
+    deviceTokens?: Prisma.DeviceTokenUncheckedUpdateManyWithoutUserNestedInput;
+    notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+    histories?: Prisma.QueueHistoryUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCountOutputType = {
     queueEntries: number;
     deviceTokens: number;
     notifications: number;
     histories: number;
+    authSessions: number;
 };
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     queueEntries?: boolean | UserCountOutputTypeCountQueueEntriesArgs;
     deviceTokens?: boolean | UserCountOutputTypeCountDeviceTokensArgs;
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs;
     histories?: boolean | UserCountOutputTypeCountHistoriesArgs;
+    authSessions?: boolean | UserCountOutputTypeCountAuthSessionsArgs;
 };
 export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null;
@@ -762,6 +876,9 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
 export type UserCountOutputTypeCountHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.QueueHistoryWhereInput;
 };
+export type UserCountOutputTypeCountAuthSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.AuthSessionWhereInput;
+};
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     fullName?: boolean;
@@ -776,6 +893,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     deviceTokens?: boolean | Prisma.User$deviceTokensArgs<ExtArgs>;
     notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
     histories?: boolean | Prisma.User$historiesArgs<ExtArgs>;
+    authSessions?: boolean | Prisma.User$authSessionsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -815,6 +933,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     deviceTokens?: boolean | Prisma.User$deviceTokensArgs<ExtArgs>;
     notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
     histories?: boolean | Prisma.User$historiesArgs<ExtArgs>;
+    authSessions?: boolean | Prisma.User$authSessionsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
@@ -827,6 +946,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         deviceTokens: Prisma.$DeviceTokenPayload<ExtArgs>[];
         notifications: Prisma.$NotificationPayload<ExtArgs>[];
         histories: Prisma.$QueueHistoryPayload<ExtArgs>[];
+        authSessions: Prisma.$AuthSessionPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
@@ -894,6 +1014,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
     deviceTokens<T extends Prisma.User$deviceTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$deviceTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeviceTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     histories<T extends Prisma.User$historiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$historiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QueueHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    authSessions<T extends Prisma.User$authSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
     catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
     finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
@@ -1055,6 +1176,17 @@ export type User$historiesArgs<ExtArgs extends runtime.Types.Extensions.Internal
     take?: number;
     skip?: number;
     distinct?: Prisma.QueueHistoryScalarFieldEnum | Prisma.QueueHistoryScalarFieldEnum[];
+};
+export type User$authSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    select?: Prisma.AuthSessionSelect<ExtArgs> | null;
+    omit?: Prisma.AuthSessionOmit<ExtArgs> | null;
+    include?: Prisma.AuthSessionInclude<ExtArgs> | null;
+    where?: Prisma.AuthSessionWhereInput;
+    orderBy?: Prisma.AuthSessionOrderByWithRelationInput | Prisma.AuthSessionOrderByWithRelationInput[];
+    cursor?: Prisma.AuthSessionWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.AuthSessionScalarFieldEnum | Prisma.AuthSessionScalarFieldEnum[];
 };
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.UserSelect<ExtArgs> | null;
