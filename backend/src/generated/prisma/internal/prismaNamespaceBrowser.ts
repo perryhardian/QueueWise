@@ -60,7 +60,8 @@ export const ModelName = {
   QueueEntry: 'QueueEntry',
   DeviceToken: 'DeviceToken',
   Notification: 'Notification',
-  QueueHistory: 'QueueHistory'
+  QueueHistory: 'QueueHistory',
+  AuthSession: 'AuthSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -224,6 +225,19 @@ export const QueueHistoryScalarFieldEnum = {
 } as const
 
 export type QueueHistoryScalarFieldEnum = (typeof QueueHistoryScalarFieldEnum)[keyof typeof QueueHistoryScalarFieldEnum]
+
+
+export const AuthSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  refreshTokenHash: 'refreshTokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum]
 
 
 export const SortOrder = {

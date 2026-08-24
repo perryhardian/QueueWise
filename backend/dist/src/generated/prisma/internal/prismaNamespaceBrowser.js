@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.QueueHistoryScalarFieldEnum = exports.NotificationScalarFieldEnum = exports.DeviceTokenScalarFieldEnum = exports.QueueEntryScalarFieldEnum = exports.QueueScalarFieldEnum = exports.ServiceScalarFieldEnum = exports.BusinessScalarFieldEnum = exports.BusinessCategoryScalarFieldEnum = exports.MerchantScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.AuthSessionScalarFieldEnum = exports.QueueHistoryScalarFieldEnum = exports.NotificationScalarFieldEnum = exports.DeviceTokenScalarFieldEnum = exports.QueueEntryScalarFieldEnum = exports.QueueScalarFieldEnum = exports.ServiceScalarFieldEnum = exports.BusinessScalarFieldEnum = exports.BusinessCategoryScalarFieldEnum = exports.MerchantScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -54,7 +54,8 @@ exports.ModelName = {
     QueueEntry: 'QueueEntry',
     DeviceToken: 'DeviceToken',
     Notification: 'Notification',
-    QueueHistory: 'QueueHistory'
+    QueueHistory: 'QueueHistory',
+    AuthSession: 'AuthSession'
 };
 exports.TransactionIsolationLevel = runtime.makeStrictEnum({
     ReadUncommitted: 'ReadUncommitted',
@@ -168,6 +169,15 @@ exports.QueueHistoryScalarFieldEnum = {
     waitingMinutes: 'waitingMinutes',
     serviceMinutes: 'serviceMinutes',
     createdAt: 'createdAt'
+};
+exports.AuthSessionScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    refreshTokenHash: 'refreshTokenHash',
+    expiresAt: 'expiresAt',
+    revokedAt: 'revokedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 };
 exports.SortOrder = {
     asc: 'asc',
