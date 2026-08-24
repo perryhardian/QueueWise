@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:queuewise/main.dart';
 
 void main() {
-  testWidgets('renders phase 2 setup screen', (tester) async {
+  testWidgets('renders login screen', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: QueueWiseApp()));
+    await tester.pump();
 
-    expect(find.text('QueueWise'), findsOneWidget);
-    expect(find.text('Phase 2 Setup'), findsOneWidget);
-    expect(find.text('Riverpod configured'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
+    expect(find.text('Email'), findsOneWidget);
+    expect(find.text('Password'), findsOneWidget);
   });
 }
