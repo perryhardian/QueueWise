@@ -1,0 +1,2 @@
+import '../entities/business.dart';
+abstract class BusinessRepository { Future<List<BusinessCategory>> getCategories(); Future<List<Business>> getBusinesses({String? search, String? category, String? queueLength}); Future<List<Business>> getNearbyBusinesses(); Future<Business> getBusiness(String id); }
