@@ -16,3 +16,4 @@ export type QueueEntry = Prisma.QueueEntryModel;
 export type DeviceToken = Prisma.DeviceTokenModel;
 export type Notification = Prisma.NotificationModel;
 export type QueueHistory = Prisma.QueueHistoryModel;
+export type AuthSession = Prisma.AuthSessionModel;
