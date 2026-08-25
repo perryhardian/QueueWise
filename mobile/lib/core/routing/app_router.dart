@@ -13,6 +13,7 @@ import '../../features/merchant/presentation/screens/merchant_dashboard_screen.d
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/queue/presentation/screens/my_queue_screen.dart';
 import '../../features/queue/presentation/screens/queue_confirmation_screen.dart';
+import '../../features/queue/presentation/screens/qr_check_in_screen.dart';
 import 'customer_shell_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -46,7 +47,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         branches: [
           StatefulShellBranch(navigatorKey: _homeNavigatorKey, routes: [GoRoute(path: '/home', builder: (context, state) => const CustomerHomeScreen())]),
           StatefulShellBranch(navigatorKey: _exploreNavigatorKey, routes: [GoRoute(path: '/explore', builder: (context, state) => const ExploreScreen())]),
-          StatefulShellBranch(navigatorKey: _queueNavigatorKey, routes: [GoRoute(path: '/my-queue', builder: (context, state) => const MyQueueScreen())]),
+          StatefulShellBranch(navigatorKey: _queueNavigatorKey, routes: [
+            GoRoute(
+              path: '/my-queue',
+              builder: (context, state) => const MyQueueScreen(),
+              routes: [GoRoute(path: 'check-in', builder: (context, state) => const QrCheckInScreen())],
+            ),
+          ]),
           StatefulShellBranch(navigatorKey: _historyNavigatorKey, routes: [GoRoute(path: '/history', builder: (context, state) => const HistoryScreen())]),
           StatefulShellBranch(navigatorKey: _profileNavigatorKey, routes: [GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen())]),
         ],

@@ -73,6 +73,18 @@ export class QueuesService {
       business: { id: queue.business.id, name: queue.business.name, address: queue.business.address },
     }));
   }
+
+  async getBusinessCheckInQr(userId: string, businessId: string) {
+    const business = await this.assertMerchantOwnsBusiness(userId, businessId);
+    const qrCodeToken = business.qrCodeToken;
+    return {
+      businessId: business.id,
+      businessName: business.name,
+      qrCodeToken,
+      qrPayload: `queuewise://check-in?qrCodeToken=${encodeURIComponent(qrCodeToken)}`,
+    };
+  }
+
   async openQueue(userId: string, businessId: string, dto: OpenQueueDto) {
     await this.assertMerchantOwnsBusiness(userId, businessId);
     return this.prisma.$transaction(async (tx) => {

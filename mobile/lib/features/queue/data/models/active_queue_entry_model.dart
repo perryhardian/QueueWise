@@ -13,7 +13,7 @@ class QueueBusinessRefModel extends QueueBusinessRef {
 }
 
 class ActiveQueueEntryModel extends ActiveQueueEntry {
-  const ActiveQueueEntryModel({required super.id, required super.queueId, required super.queueNumber, required super.sequenceNumber, required super.source, required super.status, required super.peopleAhead, required super.estimatedWaitingTimeMinutes, super.nowServing, super.business});
+  const ActiveQueueEntryModel({required super.id, required super.queueId, required super.queueNumber, required super.sequenceNumber, required super.source, required super.status, required super.peopleAhead, required super.estimatedWaitingTimeMinutes, super.nowServing, super.checkedInAt, super.business});
 
   factory ActiveQueueEntryModel.fromJson(Map<String, dynamic> json) {
     final businessJson = json['business'];
@@ -25,6 +25,7 @@ class ActiveQueueEntryModel extends ActiveQueueEntry {
       source: json['source'] as String,
       status: json['status'] as String,
       nowServing: json['nowServing'] as String?,
+      checkedInAt: json['checkedInAt'] == null ? null : DateTime.parse(json['checkedInAt'] as String),
       peopleAhead: (json['peopleAhead'] as num).toInt(),
       estimatedWaitingTimeMinutes: (json['estimatedWaitingTimeMinutes'] as num).toInt(),
       business: businessJson == null ? null : QueueBusinessRefModel.fromJson(businessJson as Map<String, dynamic>),

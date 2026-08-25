@@ -16,6 +16,7 @@ class ActiveQueueEntry {
     required this.peopleAhead,
     required this.estimatedWaitingTimeMinutes,
     this.nowServing,
+    this.checkedInAt,
     this.business,
   });
 
@@ -26,6 +27,7 @@ class ActiveQueueEntry {
   final String source;
   final String status;
   final String? nowServing;
+  final DateTime? checkedInAt;
   final int peopleAhead;
   final int estimatedWaitingTimeMinutes;
   final QueueBusinessRef? business;

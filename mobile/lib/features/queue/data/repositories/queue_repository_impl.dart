@@ -23,4 +23,7 @@ class QueueRepositoryImpl implements QueueRepository {
 
   @override
   Future<ActiveQueueEntry> cancelQueueEntry(String entryId) => remoteDataSource.cancelQueueEntry(entryId);
+
+  @override
+  Future<ActiveQueueEntry> checkInQueueEntry(String entryId, String qrCodeToken) => remoteDataSource.checkInQueueEntry(entryId, qrCodeToken);
 }

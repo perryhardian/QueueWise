@@ -32,4 +32,9 @@ class QueueRemoteDataSource {
     final response = await _dio.post<Map<String, dynamic>>('/queue-entries/$entryId/cancel');
     return ActiveQueueEntryModel.fromJson(response.data!);
   }
+
+  Future<ActiveQueueEntryModel> checkInQueueEntry(String entryId, String qrCodeToken) async {
+    final response = await _dio.post<Map<String, dynamic>>('/queue-entries/$entryId/check-in', data: {'qrCodeToken': qrCodeToken});
+    return ActiveQueueEntryModel.fromJson(response.data!);
+  }
 }
