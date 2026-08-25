@@ -1,4 +1,4 @@
-import { plainToInstance } from 'class-transformer';
+import { plainToInstance, Type } from 'class-transformer';
 import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
 
 enum Environment {
@@ -14,6 +14,7 @@ class EnvironmentVariables {
   @IsInt()
   @Min(1)
   @Max(65535)
+  @Type(() => Number)
   PORT = 3000;
 
   @IsString()
