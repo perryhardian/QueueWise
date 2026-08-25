@@ -1,12 +1,13 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { QueueEntryStatus, QueueStatus } from '../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
+import { QueueEventsService } from '../websocket/queue-events.service';
 import { OpenQueueDto } from './dto/open-queue.dto';
 import { activeQueueEntryStatuses, estimateWaitMinutes } from './queue-calculation.util';
 
 @Injectable()
 export class QueuesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly queueEventsService: QueueEventsService) {}
 
   async getBusinessQueue(businessId: string) {
     const queue = await this.prisma.queue.findFirst({
@@ -96,7 +97,9 @@ export class QueuesService {
         data: { businessId, status: QueueStatus.OPEN, nextSequence: 1, averageServiceTimeMinutes: dto.averageServiceTimeMinutes ?? 10, openedAt: new Date() },
         include: { business: true, entries: true },
       });
-      return this.toQueueStatus(queue);
+      const result = this.toQueueStatus(queue);
+      this.queueEventsService.emitQueueEvent({ event: 'queue.updated', queueId: queue.id, businessId: queue.businessId });
+      return result;
     });
   }
 
@@ -107,7 +110,9 @@ export class QueuesService {
       data: { status: QueueStatus.CLOSED, closedAt: new Date() },
       include: { business: true, entries: { where: { status: { in: activeQueueEntryStatuses } }, orderBy: { sequenceNumber: 'asc' } } },
     });
-    return this.toQueueStatus(queue);
+    const result = this.toQueueStatus(queue);
+    this.queueEventsService.emitQueueEvent({ event: 'queue.updated', queueId: queue.id, businessId: queue.businessId });
+    return result;
   }
 
   async pauseQueue(userId: string, queueId: string) {
@@ -117,7 +122,9 @@ export class QueuesService {
       data: { status: QueueStatus.PAUSED },
       include: { business: true, entries: { where: { status: { in: activeQueueEntryStatuses } }, orderBy: { sequenceNumber: 'asc' } } },
     });
-    return this.toQueueStatus(queue);
+    const result = this.toQueueStatus(queue);
+    this.queueEventsService.emitQueueEvent({ event: 'queue.updated', queueId: queue.id, businessId: queue.businessId });
+    return result;
   }
 
   async assertMerchantOwnsQueue(userId: string, queueId: string) {

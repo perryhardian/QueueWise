@@ -12,7 +12,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { QueueEntriesModule } from './queue-entries/queue-entries.module';
 import { QueuesModule } from './queues/queues.module';
 import { UsersModule } from './users/users.module';
-import { WebsocketModule } from './websocket/websocket.module';
+import { QueueRealtimeModule } from './websocket/queue-realtime.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     QueueEntriesModule,
     NotificationsModule,
     AnalyticsModule,
-    WebsocketModule,
+    QueueRealtimeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
