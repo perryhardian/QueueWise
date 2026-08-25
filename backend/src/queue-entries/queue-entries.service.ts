@@ -1,5 +1,6 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { QueueEntrySource, QueueEntryStatus, QueueStatus } from '../generated/prisma/enums';
+import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { activeQueueEntryStatuses, estimateWaitMinutes, formatQueueNumber } from '../queues/queue-calculation.util';
 import { QueuesService } from '../queues/queues.service';
@@ -14,6 +15,7 @@ export class QueueEntriesService {
     private readonly prisma: PrismaService,
     private readonly queuesService: QueuesService,
     private readonly queueEventsService: QueueEventsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async joinQueue(userId: string, queueId: string, _dto: JoinQueueDto) {
@@ -37,6 +39,7 @@ export class QueueEntriesService {
       return this.toActiveQueueEntry(entry, updatedQueue.currentNumber, peopleAhead, updatedQueue.averageServiceTimeMinutes);
     });
     this.queueEventsService.emitQueueEvent({ event: 'queue.joined', queueId, entryId: result.id, userId });
+    await this.notificationsService.notifyQueueProgress(queueId);
     return result;
   }
 
@@ -56,6 +59,7 @@ export class QueueEntriesService {
       return this.toActiveQueueEntry(entry, updatedQueue.currentNumber, peopleAhead, updatedQueue.averageServiceTimeMinutes);
     });
     this.queueEventsService.emitQueueEvent({ event: 'queue.joined', queueId, entryId: result.id });
+    await this.notificationsService.notifyQueueProgress(queueId);
     return result;
   }
 
@@ -88,6 +92,7 @@ export class QueueEntriesService {
     const peopleAhead = await this.prisma.queueEntry.count({ where: { queueId: updated.queueId, sequenceNumber: { lt: updated.sequenceNumber }, status: { in: activeQueueEntryStatuses } } });
     const result = this.toActiveQueueEntry(updated, updated.queue.currentNumber, peopleAhead, updated.queue.averageServiceTimeMinutes, updated.queue.business);
     this.queueEventsService.emitQueueEvent({ event: 'queue.cancelled', queueId: updated.queueId, businessId: updated.queue.businessId, entryId: updated.id, userId });
+    await this.notificationsService.notifyQueueProgress(updated.queueId);
     return result;
   }
 
@@ -108,27 +113,33 @@ export class QueueEntriesService {
     const peopleAhead = await this.prisma.queueEntry.count({ where: { queueId: updated.queueId, sequenceNumber: { lt: updated.sequenceNumber }, status: { in: activeQueueEntryStatuses } } });
     const result = this.toActiveQueueEntry(updated, updated.queue.currentNumber, peopleAhead, updated.queue.averageServiceTimeMinutes, updated.queue.business);
     this.queueEventsService.emitQueueEvent({ event: 'queue.checked_in', queueId: updated.queueId, businessId: updated.queue.businessId, entryId: updated.id, userId });
+    await this.notificationsService.notifyQueueProgress(updated.queueId);
     return result;
   }
 
   async callNext(userId: string, queueId: string) {
     await this.queuesService.assertMerchantOwnsQueue(userId, queueId);
-    return this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx) => {
       const queue = await tx.queue.findUnique({ where: { id: queueId } });
       if (!queue) throw new NotFoundException('Queue not found');
       if (queue.status !== QueueStatus.OPEN) throw new BadRequestException('Queue is not open');
 
       const activeCalled = await tx.queueEntry.findFirst({ where: { queueId, status: QueueEntryStatus.CALLED }, orderBy: { sequenceNumber: 'asc' } });
-      if (activeCalled) return this.toMerchantQueueEntry(activeCalled);
+      if (activeCalled) return { entry: activeCalled, businessId: queue.businessId, notify: false };
 
       const nextEntry = await tx.queueEntry.findFirst({ where: { queueId, status: { in: [QueueEntryStatus.CHECKED_IN, QueueEntryStatus.WAITING] } }, orderBy: [{ status: 'asc' }, { sequenceNumber: 'asc' }] });
       if (!nextEntry) throw new NotFoundException('No waiting customers available');
 
       const updated = await tx.queueEntry.update({ where: { id: nextEntry.id }, data: { status: QueueEntryStatus.CALLED, calledAt: new Date() } });
       await tx.queue.update({ where: { id: queueId }, data: { currentNumber: updated.queueNumber } });
-      this.queueEventsService.emitQueueEvent({ event: 'queue.called', queueId, businessId: queue.businessId, entryId: updated.id, userId: updated.userId });
-      return this.toMerchantQueueEntry(updated);
+      return { entry: updated, businessId: queue.businessId, notify: true };
     });
+    if (result.notify) {
+      this.queueEventsService.emitQueueEvent({ event: 'queue.called', queueId, businessId: result.businessId, entryId: result.entry.id, userId: result.entry.userId });
+      await this.notificationsService.notifyCustomerCalled(result.entry.id);
+      await this.notificationsService.notifyQueueProgress(queueId);
+    }
+    return this.toMerchantQueueEntry(result.entry);
   }
 
   async callEntry(userId: string, entryId: string) {
@@ -137,6 +148,8 @@ export class QueueEntriesService {
     const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: QueueEntryStatus.CALLED, calledAt: new Date() } });
     await this.prisma.queue.update({ where: { id: entry.queueId }, data: { currentNumber: updated.queueNumber } });
     this.queueEventsService.emitQueueEvent({ event: 'queue.called', queueId: entry.queueId, businessId: entry.queue.businessId, entryId: updated.id, userId: entry.userId });
+    await this.notificationsService.notifyCustomerCalled(updated.id);
+    await this.notificationsService.notifyQueueProgress(entry.queueId);
     return this.toMerchantQueueEntry(updated);
   }
 
@@ -146,6 +159,7 @@ export class QueueEntriesService {
     const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: QueueEntryStatus.SERVING, serviceStartedAt: new Date() } });
     await this.prisma.queue.update({ where: { id: entry.queueId }, data: { currentNumber: updated.queueNumber } });
     this.queueEventsService.emitQueueEvent({ event: 'queue.serving', queueId: entry.queueId, businessId: entry.queue.businessId, entryId: updated.id, userId: entry.userId });
+    await this.notificationsService.notifyQueueProgress(entry.queueId);
     return this.toMerchantQueueEntry(updated);
   }
 
@@ -161,6 +175,7 @@ export class QueueEntriesService {
       return this.toMerchantQueueEntry(completed);
     });
     this.queueEventsService.emitQueueEvent({ event: 'queue.completed', queueId: entry.queueId, businessId: entry.queue.businessId, entryId, userId: entry.userId });
+    await this.notificationsService.notifyQueueProgress(entry.queueId);
     return result;
   }
 
@@ -169,6 +184,7 @@ export class QueueEntriesService {
     if (entry.status !== QueueEntryStatus.CALLED && entry.status !== QueueEntryStatus.WAITING && entry.status !== QueueEntryStatus.CHECKED_IN) throw new BadRequestException('This customer cannot be marked no-show');
     const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: QueueEntryStatus.NO_SHOW, noShowAt: new Date() } });
     this.queueEventsService.emitQueueEvent({ event: 'queue.no_show', queueId: entry.queueId, businessId: entry.queue.businessId, entryId: updated.id, userId: entry.userId });
+    await this.notificationsService.notifyQueueProgress(entry.queueId);
     return this.toMerchantQueueEntry(updated);
   }
 

@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { BusinessesModule } from './businesses/businesses.module';
 import { validateEnvironment } from './common/config/environment.validation';
 import { MerchantsModule } from './merchants/merchants.module';
-import { NotificationsModule } from './notifications/notifications.module';
+import { NotificationsFeatureModule } from './notifications/notifications-feature.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { QueueEntriesModule } from './queue-entries/queue-entries.module';
 import { QueuesModule } from './queues/queues.module';
@@ -27,7 +27,7 @@ import { QueueRealtimeModule } from './websocket/queue-realtime.module';
     BusinessesModule,
     QueuesModule,
     QueueEntriesModule,
-    NotificationsModule,
+    NotificationsFeatureModule,
     AnalyticsModule,
     QueueRealtimeModule,
   ],
