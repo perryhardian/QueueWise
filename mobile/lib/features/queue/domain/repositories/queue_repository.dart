@@ -5,4 +5,5 @@ abstract class QueueRepository {
   Future<ActiveQueueEntry?> getMyActiveQueue();
   Future<ActiveQueueEntry> getQueueEntryStatus(String entryId);
   Future<ActiveQueueEntry> cancelQueueEntry(String entryId);
+  Future<ActiveQueueEntry> checkInQueueEntry(String entryId, String qrCodeToken);
 }

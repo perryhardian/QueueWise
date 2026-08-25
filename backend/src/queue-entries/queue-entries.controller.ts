@@ -5,6 +5,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Role } from '../generated/prisma/enums';
+import { CheckInDto } from './dto/check-in.dto';
 import { JoinQueueDto } from './dto/join-queue.dto';
 import { WalkInDto } from './dto/walk-in.dto';
 import { QueueEntriesService } from './queue-entries.service';
@@ -39,6 +40,13 @@ export class QueueEntriesController {
   @Post('queue-entries/:entryId/cancel')
   cancel(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string) {
     return this.queueEntriesService.cancelEntry(user.id, entryId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.CUSTOMER)
+  @Post('queue-entries/:entryId/check-in')
+  checkIn(@CurrentUser() user: AuthenticatedUser, @Param('entryId') entryId: string, @Body() dto: CheckInDto) {
+    return this.queueEntriesService.checkIn(user.id, entryId, dto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

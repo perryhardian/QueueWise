@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/widgets/state_views.dart';
 import '../controllers/active_queue_controller.dart';
@@ -57,15 +58,21 @@ class MyQueueScreen extends ConsumerWidget {
                   const SizedBox(height: 8),
                   QueueStatTile(label: 'Estimated Time', value: '${entry.estimatedWaitingTimeMinutes} min', icon: Icons.schedule),
                   const SizedBox(height: 24),
-                  FilledButton.icon(onPressed: null, icon: const Icon(Icons.qr_code_scanner), label: const Text('Check-in')),
+                  FilledButton.icon(
+                    onPressed: entry.status == 'WAITING' ? () => context.go('/my-queue/check-in') : null,
+                    icon: const Icon(Icons.qr_code_scanner),
+                    label: Text(entry.status == 'CHECKED_IN' ? 'Checked in' : 'Check-in'),
+                  ),
                   const SizedBox(height: 8),
                   OutlinedButton.icon(
                     onPressed: () => _confirmCancel(context, ref),
                     icon: const Icon(Icons.close),
                     label: const Text('Cancel Queue'),
                   ),
-                  const SizedBox(height: 8),
-                  const Text('QR check-in is implemented in Phase 7.'),
+                  if (entry.status == 'CHECKED_IN') ...[
+                    const SizedBox(height: 8),
+                    Text('You are checked in. Stay nearby for your turn.', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
+                  ],
                 ],
               ),
             );

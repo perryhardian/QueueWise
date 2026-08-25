@@ -39,4 +39,13 @@ class ActiveQueueController extends AsyncNotifier<ActiveQueueEntry?> {
     await _repository.cancelQueueEntry(entry.id);
     state = const AsyncData(null);
   }
+
+  Future<ActiveQueueEntry> checkIn(String qrCodeToken) async {
+    final entry = state.valueOrNull;
+    if (entry == null) throw StateError('No active queue entry to check in');
+    state = const AsyncLoading();
+    final result = await AsyncValue.guard(() => _repository.checkInQueueEntry(entry.id, qrCodeToken));
+    state = result;
+    return result.requireValue;
+  }
 }

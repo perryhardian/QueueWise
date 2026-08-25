@@ -3,6 +3,7 @@ import { QueueEntrySource, QueueEntryStatus, QueueStatus } from '../generated/pr
 import { PrismaService } from '../prisma/prisma.service';
 import { activeQueueEntryStatuses, estimateWaitMinutes, formatQueueNumber } from '../queues/queue-calculation.util';
 import { QueuesService } from '../queues/queues.service';
+import { CheckInDto } from './dto/check-in.dto';
 import { JoinQueueDto } from './dto/join-queue.dto';
 import { WalkInDto } from './dto/walk-in.dto';
 
@@ -75,6 +76,24 @@ export class QueueEntriesService {
     if (entry.status !== QueueEntryStatus.WAITING && entry.status !== QueueEntryStatus.CHECKED_IN) throw new BadRequestException('This queue entry cannot be cancelled');
 
     const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: QueueEntryStatus.CANCELLED, cancelledAt: new Date() }, include: { queue: { include: { business: { include: { category: true } } } } } });
+    const peopleAhead = await this.prisma.queueEntry.count({ where: { queueId: updated.queueId, sequenceNumber: { lt: updated.sequenceNumber }, status: { in: activeQueueEntryStatuses } } });
+    return this.toActiveQueueEntry(updated, updated.queue.currentNumber, peopleAhead, updated.queue.averageServiceTimeMinutes, updated.queue.business);
+  }
+
+  async checkIn(userId: string, entryId: string, dto: CheckInDto) {
+    const entry = await this.prisma.queueEntry.findUnique({ where: { id: entryId }, include: { queue: { include: { business: { include: { category: true } } } } } });
+    if (!entry) throw new NotFoundException('Queue entry not found');
+    if (entry.userId !== userId) throw new ForbiddenException('You do not own this queue entry');
+    if (entry.queue.status !== QueueStatus.OPEN) throw new BadRequestException('Queue is not open for check-in');
+    if (entry.status === QueueEntryStatus.CHECKED_IN) throw new BadRequestException('You are already checked in');
+    if (entry.status !== QueueEntryStatus.WAITING) throw new BadRequestException('Only waiting queue entries can check in');
+    if (entry.queue.business.qrCodeToken !== dto.qrCodeToken.trim()) throw new BadRequestException('This QR code is not valid for your queue');
+
+    const updated = await this.prisma.queueEntry.update({
+      where: { id: entryId },
+      data: { status: QueueEntryStatus.CHECKED_IN, checkedInAt: new Date() },
+      include: { queue: { include: { business: { include: { category: true } } } } },
+    });
     const peopleAhead = await this.prisma.queueEntry.count({ where: { queueId: updated.queueId, sequenceNumber: { lt: updated.sequenceNumber }, status: { in: activeQueueEntryStatuses } } });
     return this.toActiveQueueEntry(updated, updated.queue.currentNumber, peopleAhead, updated.queue.averageServiceTimeMinutes, updated.queue.business);
   }
@@ -167,6 +186,7 @@ export class QueueEntriesService {
       source: entry.source,
       status: entry.status,
       joinedAt: entry.joinedAt,
+      checkedInAt: 'checkedInAt' in entry ? entry.checkedInAt : undefined,
       nowServing: currentNumber,
       peopleAhead,
       estimatedWaitingTimeMinutes: estimateWaitMinutes(peopleAhead, averageServiceTimeMinutes),
@@ -175,5 +195,5 @@ export class QueueEntriesService {
   }
 }
 
-type EntryShape = { id: string; queueId: string; queueNumber: string; sequenceNumber: number; source: QueueEntrySource; status: QueueEntryStatus; joinedAt: Date };
+type EntryShape = { id: string; queueId: string; queueNumber: string; sequenceNumber: number; source: QueueEntrySource; status: QueueEntryStatus; joinedAt: Date; checkedInAt?: Date | null };
 type BusinessShape = { id: string; name: string; address: string; category: { id: string; name: string; slug: string } };

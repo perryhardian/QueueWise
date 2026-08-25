@@ -45,6 +45,13 @@ export class QueuesController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.MERCHANT)
+  @Get('merchant/businesses/:businessId/check-in-qr')
+  getBusinessCheckInQr(@CurrentUser() user: AuthenticatedUser, @Param('businessId') businessId: string) {
+    return this.queuesService.getBusinessCheckInQr(user.id, businessId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.MERCHANT)
   @Post('merchant/businesses/:businessId/queues/open')
   openQueue(@CurrentUser() user: AuthenticatedUser, @Param('businessId') businessId: string, @Body() dto: OpenQueueDto) {
     return this.queuesService.openQueue(user.id, businessId, dto);
