@@ -91,6 +91,7 @@ export class QueueEntriesService {
     const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: QueueEntryStatus.CANCELLED, cancelledAt: new Date() }, include: { queue: { include: { business: { include: { category: true } } } } } });
     const peopleAhead = await this.prisma.queueEntry.count({ where: { queueId: updated.queueId, sequenceNumber: { lt: updated.sequenceNumber }, status: { in: activeQueueEntryStatuses } } });
     const result = this.toActiveQueueEntry(updated, updated.queue.currentNumber, peopleAhead, updated.queue.averageServiceTimeMinutes, updated.queue.business);
+    await this.createHistoryRecord(updated);
     this.queueEventsService.emitQueueEvent({ event: 'queue.cancelled', queueId: updated.queueId, businessId: updated.queue.businessId, entryId: updated.id, userId });
     await this.notificationsService.notifyQueueProgress(updated.queueId);
     return result;
@@ -172,17 +173,19 @@ export class QueueEntriesService {
       const completedDurations = await tx.queueEntry.findMany({ where: { queueId: entry.queueId, status: QueueEntryStatus.COMPLETED, serviceStartedAt: { not: null }, completedAt: { not: null } }, select: { serviceStartedAt: true, completedAt: true } });
       const average = this.calculateAverageServiceMinutes(completedDurations, entry.queue.averageServiceTimeMinutes);
       await tx.queue.update({ where: { id: entry.queueId }, data: { averageServiceTimeMinutes: average } });
-      return this.toMerchantQueueEntry(completed);
+      return completed;
     });
+    await this.createHistoryRecord({ ...result, queue: entry.queue });
     this.queueEventsService.emitQueueEvent({ event: 'queue.completed', queueId: entry.queueId, businessId: entry.queue.businessId, entryId, userId: entry.userId });
     await this.notificationsService.notifyQueueProgress(entry.queueId);
-    return result;
+    return this.toMerchantQueueEntry(result);
   }
 
   async markNoShow(userId: string, entryId: string) {
     const entry = await this.assertMerchantOwnsEntry(userId, entryId);
     if (entry.status !== QueueEntryStatus.CALLED && entry.status !== QueueEntryStatus.WAITING && entry.status !== QueueEntryStatus.CHECKED_IN) throw new BadRequestException('This customer cannot be marked no-show');
     const updated = await this.prisma.queueEntry.update({ where: { id: entryId }, data: { status: QueueEntryStatus.NO_SHOW, noShowAt: new Date() } });
+    await this.createHistoryRecord({ ...updated, queue: entry.queue });
     this.queueEventsService.emitQueueEvent({ event: 'queue.no_show', queueId: entry.queueId, businessId: entry.queue.businessId, entryId: updated.id, userId: entry.userId });
     await this.notificationsService.notifyQueueProgress(entry.queueId);
     return this.toMerchantQueueEntry(updated);
@@ -206,6 +209,34 @@ export class QueueEntriesService {
     });
     if (!durations.length) return fallback;
     return Math.round(durations.reduce((sum, duration) => sum + duration, 0) / durations.length);
+  }
+
+  private async createHistoryRecord(entry: TerminalEntryShape) {
+    const terminalAt = entry.completedAt ?? entry.cancelledAt ?? entry.noShowAt ?? new Date();
+    const waitingEndedAt = entry.calledAt ?? entry.serviceStartedAt ?? terminalAt;
+    const waitingMinutes = Math.max(0, Math.round((waitingEndedAt.getTime() - entry.joinedAt.getTime()) / 60000));
+    const serviceMinutes = entry.serviceStartedAt && entry.completedAt ? Math.max(1, Math.round((entry.completedAt.getTime() - entry.serviceStartedAt.getTime()) / 60000)) : null;
+
+    await this.prisma.queueHistory.upsert({
+      where: { queueEntryId: entry.id },
+      update: {
+        finalStatus: entry.status,
+        completedAt: terminalAt,
+        waitingMinutes,
+        serviceMinutes,
+      },
+      create: {
+        userId: entry.userId ?? null,
+        businessId: entry.queue.businessId,
+        queueEntryId: entry.id,
+        queueNumber: entry.queueNumber,
+        finalStatus: entry.status,
+        joinedAt: entry.joinedAt,
+        completedAt: terminalAt,
+        waitingMinutes,
+        serviceMinutes,
+      },
+    });
   }
 
   private toMerchantQueueEntry(entry: EntryShape) {
@@ -232,3 +263,11 @@ export class QueueEntriesService {
 
 type EntryShape = { id: string; queueId: string; queueNumber: string; sequenceNumber: number; source: QueueEntrySource; status: QueueEntryStatus; joinedAt: Date; userId?: string | null; checkedInAt?: Date | null };
 type BusinessShape = { id: string; name: string; address: string; category: { id: string; name: string; slug: string } };
+type TerminalEntryShape = EntryShape & {
+  queue: { businessId: string };
+  calledAt?: Date | null;
+  serviceStartedAt?: Date | null;
+  completedAt?: Date | null;
+  cancelledAt?: Date | null;
+  noShowAt?: Date | null;
+};

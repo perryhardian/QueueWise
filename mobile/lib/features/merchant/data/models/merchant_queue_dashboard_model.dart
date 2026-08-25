@@ -1,9 +1,14 @@
 import '../../domain/entities/merchant_queue_dashboard.dart';
 
-DateTime? _optionalDate(Object? value) => value == null ? null : DateTime.parse(value as String);
+DateTime? _optionalDate(Object? value) =>
+    value == null ? null : DateTime.parse(value as String);
 
 class MerchantBusinessBriefModel extends MerchantBusinessBrief {
-  const MerchantBusinessBriefModel({required super.id, required super.name, required super.address});
+  const MerchantBusinessBriefModel({
+    required super.id,
+    required super.name,
+    required super.address,
+  });
 
   factory MerchantBusinessBriefModel.fromJson(Map<String, dynamic> json) {
     return MerchantBusinessBriefModel(
@@ -15,7 +20,13 @@ class MerchantBusinessBriefModel extends MerchantBusinessBrief {
 }
 
 class MerchantQueueInfoModel extends MerchantQueueInfo {
-  const MerchantQueueInfoModel({required super.id, required super.businessId, required super.status, super.openedAt, super.closedAt});
+  const MerchantQueueInfoModel({
+    required super.id,
+    required super.businessId,
+    required super.status,
+    super.openedAt,
+    super.closedAt,
+  });
 
   factory MerchantQueueInfoModel.fromJson(Map<String, dynamic> json) {
     return MerchantQueueInfoModel(
@@ -65,12 +76,19 @@ class MerchantQueueEntryModel extends MerchantQueueEntry {
 }
 
 class MerchantQueueOverviewModel extends MerchantQueueOverview {
-  const MerchantQueueOverviewModel({required super.queue, required super.business});
+  const MerchantQueueOverviewModel({
+    required super.queue,
+    required super.business,
+  });
 
   factory MerchantQueueOverviewModel.fromJson(Map<String, dynamic> json) {
     return MerchantQueueOverviewModel(
-      queue: MerchantQueueInfoModel.fromJson(json['queue'] as Map<String, dynamic>),
-      business: MerchantBusinessBriefModel.fromJson(json['business'] as Map<String, dynamic>),
+      queue: MerchantQueueInfoModel.fromJson(
+        json['queue'] as Map<String, dynamic>,
+      ),
+      business: MerchantBusinessBriefModel.fromJson(
+        json['business'] as Map<String, dynamic>,
+      ),
     );
   }
 }
@@ -90,15 +108,75 @@ class MerchantQueueDashboardModel extends MerchantQueueDashboard {
 
   factory MerchantQueueDashboardModel.fromJson(Map<String, dynamic> json) {
     return MerchantQueueDashboardModel(
-      queue: MerchantQueueInfoModel.fromJson(json['queue'] as Map<String, dynamic>),
-      business: MerchantBusinessBriefModel.fromJson(json['business'] as Map<String, dynamic>),
+      queue: MerchantQueueInfoModel.fromJson(
+        json['queue'] as Map<String, dynamic>,
+      ),
+      business: MerchantBusinessBriefModel.fromJson(
+        json['business'] as Map<String, dynamic>,
+      ),
       nowServing: json['nowServing'] as String?,
       waitingCount: json['waitingCount'] as int,
       checkedInCount: json['checkedInCount'] as int,
       completedCount: json['completedCount'] as int,
       averageServiceTimeMinutes: json['averageServiceTimeMinutes'] as int,
       estimatedWaitingTimeMinutes: json['estimatedWaitingTimeMinutes'] as int,
-      entries: (json['entries'] as List<dynamic>).map((entry) => MerchantQueueEntryModel.fromJson(entry as Map<String, dynamic>)).toList(),
+      entries: (json['entries'] as List<dynamic>)
+          .map(
+            (entry) =>
+                MerchantQueueEntryModel.fromJson(entry as Map<String, dynamic>),
+          )
+          .toList(),
+    );
+  }
+}
+
+class MerchantAnalyticsDayModel extends MerchantAnalyticsDay {
+  const MerchantAnalyticsDayModel({
+    required super.date,
+    required super.completedCount,
+    required super.cancelledCount,
+    required super.noShowCount,
+  });
+
+  factory MerchantAnalyticsDayModel.fromJson(Map<String, dynamic> json) {
+    return MerchantAnalyticsDayModel(
+      date: DateTime.parse(json['date'] as String),
+      completedCount: json['completedCount'] as int,
+      cancelledCount: json['cancelledCount'] as int,
+      noShowCount: json['noShowCount'] as int,
+    );
+  }
+}
+
+class MerchantAnalyticsModel extends MerchantAnalytics {
+  const MerchantAnalyticsModel({
+    required super.businessId,
+    required super.windowDays,
+    required super.totalHistoryCount,
+    required super.completedCount,
+    required super.cancelledCount,
+    required super.noShowCount,
+    required super.averageWaitingMinutes,
+    required super.averageServiceMinutes,
+    required super.recentDays,
+  });
+
+  factory MerchantAnalyticsModel.fromJson(Map<String, dynamic> json) {
+    return MerchantAnalyticsModel(
+      businessId: json['businessId'] as String,
+      windowDays: json['windowDays'] as int,
+      totalHistoryCount: json['totalHistoryCount'] as int,
+      completedCount: json['completedCount'] as int,
+      cancelledCount: json['cancelledCount'] as int,
+      noShowCount: json['noShowCount'] as int,
+      averageWaitingMinutes: json['averageWaitingMinutes'] as int,
+      averageServiceMinutes: json['averageServiceMinutes'] as int,
+      recentDays: (json['recentDays'] as List<dynamic>)
+          .map(
+            (day) =>
+                MerchantAnalyticsDayModel.fromJson(day as Map<String, dynamic>),
+          )
+          .toList(),
     );
   }
 }

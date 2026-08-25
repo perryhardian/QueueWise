@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AnalyticsModule } from './analytics/analytics.module';
+import { AnalyticsFeatureModule } from './analytics/analytics-feature.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -28,7 +28,7 @@ import { QueueRealtimeModule } from './websocket/queue-realtime.module';
     QueuesModule,
     QueueEntriesModule,
     NotificationsFeatureModule,
-    AnalyticsModule,
+    AnalyticsFeatureModule,
     QueueRealtimeModule,
   ],
   controllers: [AppController],

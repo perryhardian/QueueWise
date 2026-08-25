@@ -1,5 +1,9 @@
 class MerchantBusinessBrief {
-  const MerchantBusinessBrief({required this.id, required this.name, required this.address});
+  const MerchantBusinessBrief({
+    required this.id,
+    required this.name,
+    required this.address,
+  });
 
   final String id;
   final String name;
@@ -7,7 +11,13 @@ class MerchantBusinessBrief {
 }
 
 class MerchantQueueInfo {
-  const MerchantQueueInfo({required this.id, required this.businessId, required this.status, this.openedAt, this.closedAt});
+  const MerchantQueueInfo({
+    required this.id,
+    required this.businessId,
+    required this.status,
+    this.openedAt,
+    this.closedAt,
+  });
 
   final String id;
   final String businessId;
@@ -50,7 +60,8 @@ class MerchantQueueEntry {
   bool get canCall => status == 'WAITING' || status == 'CHECKED_IN';
   bool get canStart => status == 'CALLED';
   bool get canComplete => status == 'SERVING';
-  bool get canNoShow => status == 'WAITING' || status == 'CHECKED_IN' || status == 'CALLED';
+  bool get canNoShow =>
+      status == 'WAITING' || status == 'CHECKED_IN' || status == 'CALLED';
 }
 
 class MerchantQueueOverview {
@@ -82,4 +93,44 @@ class MerchantQueueDashboard {
   final int averageServiceTimeMinutes;
   final int estimatedWaitingTimeMinutes;
   final List<MerchantQueueEntry> entries;
+}
+
+class MerchantAnalyticsDay {
+  const MerchantAnalyticsDay({
+    required this.date,
+    required this.completedCount,
+    required this.cancelledCount,
+    required this.noShowCount,
+  });
+
+  final DateTime date;
+  final int completedCount;
+  final int cancelledCount;
+  final int noShowCount;
+
+  int get total => completedCount + cancelledCount + noShowCount;
+}
+
+class MerchantAnalytics {
+  const MerchantAnalytics({
+    required this.businessId,
+    required this.windowDays,
+    required this.totalHistoryCount,
+    required this.completedCount,
+    required this.cancelledCount,
+    required this.noShowCount,
+    required this.averageWaitingMinutes,
+    required this.averageServiceMinutes,
+    required this.recentDays,
+  });
+
+  final String businessId;
+  final int windowDays;
+  final int totalHistoryCount;
+  final int completedCount;
+  final int cancelledCount;
+  final int noShowCount;
+  final int averageWaitingMinutes;
+  final int averageServiceMinutes;
+  final List<MerchantAnalyticsDay> recentDays;
 }
