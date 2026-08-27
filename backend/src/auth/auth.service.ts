@@ -60,7 +60,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Please Register First');
     }
 
     const passwordMatches = await bcrypt.compare(dto.password, user.passwordHash);

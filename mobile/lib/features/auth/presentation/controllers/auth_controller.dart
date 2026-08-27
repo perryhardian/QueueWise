@@ -20,9 +20,14 @@ class AuthController extends AsyncNotifier<AuthUser?> {
     state = await AsyncValue.guard(() => _repository.login(email: email, password: password));
   }
 
-  Future<void> register({required String fullName, required String email, required String phoneNumber, required String password, required String role, String? merchantDisplayName}) async {
+  Future<bool> register({required String fullName, required String email, required String phoneNumber, required String password, required String role, String? merchantDisplayName}) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => _repository.register(fullName: fullName, email: email, phoneNumber: phoneNumber, password: password, role: role, merchantDisplayName: merchantDisplayName));
+<<<<<<< Updated upstream
+=======
+    if (state.valueOrNull != null) unawaited(_notificationRegistrationService.registerDevice());
+    return state.valueOrNull != null;
+>>>>>>> Stashed changes
   }
 
   Future<void> logout() async {

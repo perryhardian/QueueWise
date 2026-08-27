@@ -93,7 +93,7 @@ let AuthService = class AuthService {
             where: { email: dto.email.trim().toLowerCase() },
         });
         if (!user) {
-            throw new common_1.UnauthorizedException('Invalid email or password');
+            throw new common_1.UnauthorizedException('Please Register First');
         }
         const passwordMatches = await bcrypt.compare(dto.password, user.passwordHash);
         if (!passwordMatches) {

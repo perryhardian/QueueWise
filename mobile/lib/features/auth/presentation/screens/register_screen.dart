@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/ui/app_messenger.dart';
 import '../controllers/auth_controller.dart';
 import '../widgets/auth_error_banner.dart';
 import '../widgets/auth_text_field.dart';
@@ -38,7 +39,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-    await ref.read(authControllerProvider.notifier).register(
+    final registered = await ref.read(authControllerProvider.notifier).register(
           fullName: _fullNameController.text.trim(),
           email: _emailController.text.trim(),
           phoneNumber: _phoneController.text.trim(),
@@ -46,6 +47,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           role: _role,
           merchantDisplayName: _role == 'MERCHANT' ? _fullNameController.text.trim() : null,
         );
+
+    if (registered) {
+      appScaffoldMessengerKey.currentState
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(content: Text('Registration successful.')),
+        );
+    }
   }
 
   @override
@@ -129,7 +138,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   String? _validatePassword(String? value) {
-    if ((value ?? '').length < 8) return 'Password must be at least 8 characters.';
+    if ((value ?? '').length < 8) {
+      return 'Password must be at least 8 characters.';
+    }
     return null;
   }
 
@@ -141,7 +152,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   String _friendlyError(Object? error) {
     if (error is DioException) {
       final data = error.response?.data;
-      if (data is Map && data['message'] is String) return data['message'] as String;
+      if (data is Map && data['message'] is String) {
+        return data['message'] as String;
+      }
       return 'Unable to create the account. Check your connection and try again.';
     }
     return 'Unable to create the account. Please try again.';
