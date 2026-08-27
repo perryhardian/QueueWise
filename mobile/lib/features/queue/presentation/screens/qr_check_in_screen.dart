@@ -191,8 +191,9 @@ class _QrCheckInScreenState extends ConsumerState<QrCheckInScreen> {
   String _friendlyError(Object error) {
     if (error is DioException) {
       final data = error.response?.data;
-      if (data is Map && data['message'] is String)
+      if (data is Map && data['message'] is String) {
         return data['message'] as String;
+      }
       return 'Unable to check in. Check your connection and try again.';
     }
     return 'Unable to check in. Please try again.';
