@@ -1,4 +1,4 @@
-import { plainToInstance } from 'class-transformer';
+import { plainToInstance, Type } from 'class-transformer';
 import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
 
 enum Environment {
@@ -11,10 +11,11 @@ class EnvironmentVariables {
   @IsEnum(Environment)
   NODE_ENV: Environment = Environment.Development;
 
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(65535)
-  PORT = 3000;
+  PORT: number = 3000;
 
   @IsString()
   @IsNotEmpty()

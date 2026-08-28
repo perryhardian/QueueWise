@@ -23,7 +23,12 @@ class AuthErrorBanner extends StatelessWidget {
           children: [
             Icon(Icons.error_outline, color: colors.onErrorContainer),
             const SizedBox(width: 8),
-            Expanded(child: Text(message, style: TextStyle(color: colors.onErrorContainer))),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(color: colors.onErrorContainer),
+              ),
+            ),
           ],
         ),
       ),

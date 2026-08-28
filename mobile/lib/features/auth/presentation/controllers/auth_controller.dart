@@ -4,7 +4,9 @@ import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 
-final authControllerProvider = AsyncNotifierProvider<AuthController, AuthUser?>(AuthController.new);
+final authControllerProvider = AsyncNotifierProvider<AuthController, AuthUser?>(
+  AuthController.new,
+);
 
 class AuthController extends AsyncNotifier<AuthUser?> {
   late final AuthRepository _repository;
@@ -17,17 +19,31 @@ class AuthController extends AsyncNotifier<AuthUser?> {
 
   Future<void> login({required String email, required String password}) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _repository.login(email: email, password: password));
+    state = await AsyncValue.guard(
+      () => _repository.login(email: email, password: password),
+    );
   }
 
-  Future<bool> register({required String fullName, required String email, required String phoneNumber, required String password, required String role, String? merchantDisplayName}) async {
+  Future<bool> register({
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+    required String password,
+    required String role,
+    String? merchantDisplayName,
+  }) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _repository.register(fullName: fullName, email: email, phoneNumber: phoneNumber, password: password, role: role, merchantDisplayName: merchantDisplayName));
-<<<<<<< Updated upstream
-=======
-    if (state.valueOrNull != null) unawaited(_notificationRegistrationService.registerDevice());
+    state = await AsyncValue.guard(
+      () => _repository.register(
+        fullName: fullName,
+        email: email,
+        phoneNumber: phoneNumber,
+        password: password,
+        role: role,
+        merchantDisplayName: merchantDisplayName,
+      ),
+    );
     return state.valueOrNull != null;
->>>>>>> Stashed changes
   }
 
   Future<void> logout() async {

@@ -1,10 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/ui/app_messenger.dart';
 import '../controllers/auth_controller.dart';
+import '../utils/auth_error_message.dart';
+import '../utils/auth_validation.dart';
 import '../widgets/auth_error_banner.dart';
 import '../widgets/auth_text_field.dart';
 
@@ -39,21 +40,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-    final registered = await ref.read(authControllerProvider.notifier).register(
+    final registered = await ref
+        .read(authControllerProvider.notifier)
+        .register(
           fullName: _fullNameController.text.trim(),
           email: _emailController.text.trim(),
           phoneNumber: _phoneController.text.trim(),
           password: _passwordController.text,
           role: _role,
-          merchantDisplayName: _role == 'MERCHANT' ? _fullNameController.text.trim() : null,
+          merchantDisplayName: _role == 'MERCHANT'
+              ? _fullNameController.text.trim()
+              : null,
         );
 
     if (registered) {
-      appScaffoldMessengerKey.currentState
-        ?..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(content: Text('Registration successful.')),
-        );
+      _showRegistrationSuccess();
     }
   }
 
@@ -61,7 +62,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
-    final errorMessage = authState.hasError ? _friendlyError(authState.error) : null;
+    final errorMessage = authState.hasError
+        ? _friendlyError(authState.error)
+        : null;
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -84,9 +87,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text('Create your account', style: textTheme.headlineMedium),
+                      Text(
+                        'Create your account',
+                        style: textTheme.headlineMedium,
+                      ),
                       const SizedBox(height: 8),
-                      Text('Join queues remotely or manage a business queue.', style: textTheme.bodyLarge),
+                      Text(
+                        'Join queues remotely or manage a business queue.',
+                        style: textTheme.bodyLarge,
+                      ),
                       const SizedBox(height: 24),
                       if (errorMessage != null) ...[
                         AuthErrorBanner(message: errorMessage),
@@ -94,31 +103,93 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ],
                       SegmentedButton<String>(
                         segments: const [
-                          ButtonSegment(value: 'CUSTOMER', label: Text('Customer'), icon: Icon(Icons.person_outline)),
-                          ButtonSegment(value: 'MERCHANT', label: Text('Merchant'), icon: Icon(Icons.storefront_outlined)),
+                          ButtonSegment(
+                            value: 'CUSTOMER',
+                            label: Text('Customer'),
+                            icon: Icon(Icons.person_outline),
+                          ),
+                          ButtonSegment(
+                            value: 'MERCHANT',
+                            label: Text('Merchant'),
+                            icon: Icon(Icons.storefront_outlined),
+                          ),
                         ],
                         selected: {_role},
-                        onSelectionChanged: isLoading ? null : (values) => setState(() => _role = values.first),
+                        onSelectionChanged: isLoading
+                            ? null
+                            : (values) => setState(() => _role = values.first),
                       ),
                       const SizedBox(height: 16),
-                      AuthTextField(controller: _fullNameController, label: 'Full Name', autofillHints: const [AutofillHints.name], textInputAction: TextInputAction.next, validator: (value) => (value?.trim().isEmpty ?? true) ? 'Enter your full name.' : null),
+                      AuthTextField(
+                        controller: _fullNameController,
+                        label: 'Full Name',
+                        autofillHints: const [AutofillHints.name],
+                        textInputAction: TextInputAction.next,
+                        validator: (value) => (value?.trim().isEmpty ?? true)
+                            ? 'Enter your full name.'
+                            : null,
+                      ),
                       const SizedBox(height: 16),
-                      AuthTextField(controller: _emailController, label: 'Email', keyboardType: TextInputType.emailAddress, autofillHints: const [AutofillHints.email], textInputAction: TextInputAction.next, validator: _validateEmail),
+                      AuthTextField(
+                        controller: _emailController,
+                        label: 'Email',
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        textInputAction: TextInputAction.next,
+                        validator: validateEmailAddress,
+                      ),
                       const SizedBox(height: 16),
-                      AuthTextField(controller: _phoneController, label: 'Phone Number', keyboardType: TextInputType.phone, autofillHints: const [AutofillHints.telephoneNumber], textInputAction: TextInputAction.next),
+                      AuthTextField(
+                        controller: _phoneController,
+                        label: 'Phone Number',
+                        keyboardType: TextInputType.phone,
+                        autofillHints: const [AutofillHints.telephoneNumber],
+                        textInputAction: TextInputAction.next,
+                      ),
                       const SizedBox(height: 16),
-                      AuthTextField(controller: _passwordController, label: 'Password', obscureText: _obscurePassword, autofillHints: const [AutofillHints.newPassword], textInputAction: TextInputAction.next, onToggleObscureText: () => setState(() => _obscurePassword = !_obscurePassword), validator: _validatePassword),
+                      AuthTextField(
+                        controller: _passwordController,
+                        label: 'Password',
+                        obscureText: _obscurePassword,
+                        autofillHints: const [AutofillHints.newPassword],
+                        textInputAction: TextInputAction.next,
+                        onToggleObscureText: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                        validator: _validatePassword,
+                      ),
                       const SizedBox(height: 16),
-                      AuthTextField(controller: _confirmPasswordController, label: 'Confirm Password', obscureText: _obscureConfirmPassword, autofillHints: const [AutofillHints.newPassword], textInputAction: TextInputAction.done, onToggleObscureText: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword), validator: _validateConfirmPassword),
+                      AuthTextField(
+                        controller: _confirmPasswordController,
+                        label: 'Confirm Password',
+                        obscureText: _obscureConfirmPassword,
+                        autofillHints: const [AutofillHints.newPassword],
+                        textInputAction: TextInputAction.done,
+                        onToggleObscureText: () => setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        ),
+                        validator: _validateConfirmPassword,
+                      ),
                       const SizedBox(height: 24),
                       FilledButton(
                         onPressed: isLoading ? null : _submit,
                         child: isLoading
-                            ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                            ? const SizedBox.square(
+                                dimension: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
                             : const Text('Register'),
                       ),
                       const SizedBox(height: 12),
-                      TextButton(onPressed: isLoading ? null : () => context.go('/login'), child: const Text('Already have an account? Login')),
+                      TextButton(
+                        onPressed: isLoading
+                            ? null
+                            : () => context.go('/login'),
+                        child: const Text('Already have an account? Login'),
+                      ),
                     ],
                   ),
                 ),
@@ -128,13 +199,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ),
       ),
     );
-  }
-
-  String? _validateEmail(String? value) {
-    final email = value?.trim() ?? '';
-    if (email.isEmpty) return 'Enter your email address.';
-    if (!email.contains('@')) return 'Enter a valid email address.';
-    return null;
   }
 
   String? _validatePassword(String? value) {
@@ -150,13 +214,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   String _friendlyError(Object? error) {
-    if (error is DioException) {
-      final data = error.response?.data;
-      if (data is Map && data['message'] is String) {
-        return data['message'] as String;
-      }
-      return 'Unable to create the account. Check your connection and try again.';
-    }
-    return 'Unable to create the account. Please try again.';
+    return authErrorMessage(error, action: 'create the account');
+  }
+
+  void _showRegistrationSuccess() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      appScaffoldMessengerKey.currentState
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 4),
+            content: Row(
+              children: [
+                Icon(Icons.check_circle_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Account created successfully. Welcome to QueueWise!',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+    });
   }
 }

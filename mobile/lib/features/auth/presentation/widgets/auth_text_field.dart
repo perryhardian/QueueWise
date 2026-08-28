@@ -38,7 +38,11 @@ class AuthTextField extends StatelessWidget {
             : IconButton(
                 tooltip: obscureText ? 'Show password' : 'Hide password',
                 onPressed: onToggleObscureText,
-                icon: Icon(obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                icon: Icon(
+                  obscureText
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
               ),
       ),
     );
