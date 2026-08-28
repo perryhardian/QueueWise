@@ -6,7 +6,7 @@ export class RegisterDto {
   @IsNotEmpty()
   fullName!: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'Enter a valid email address.' })
   email!: string;
 
   @IsOptional()
