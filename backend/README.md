@@ -29,7 +29,15 @@
 
 ```bash
 $ npm install
+$ npx prisma migrate dev
+$ npm run prisma:seed
 ```
+
+The seed is safe to run more than once. It creates QueueWise demo categories,
+three businesses with open queues, and these local test accounts:
+
+- Customer: `customer@queuewise.test` / `password123`
+- Merchant: `merchant@queuewise.test` / `password123`
 
 ## Compile and run the project
 

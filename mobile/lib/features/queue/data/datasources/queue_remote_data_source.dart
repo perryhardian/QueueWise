@@ -13,28 +13,50 @@ class QueueRemoteDataSource {
   final Dio _dio;
 
   Future<ActiveQueueEntryModel> joinQueue(String queueId) async {
-    final response = await _dio.post<Map<String, dynamic>>('/queues/$queueId/join', data: const <String, dynamic>{});
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/queues/$queueId/join',
+      data: const <String, dynamic>{},
+    );
     return ActiveQueueEntryModel.fromJson(response.data!);
   }
 
   Future<ActiveQueueEntryModel?> getMyActiveQueue() async {
     final response = await _dio.get<dynamic>('/queue-entries/me/active');
-    if (response.data == null) return null;
-    return ActiveQueueEntryModel.fromJson(response.data as Map<String, dynamic>);
+    return parseActiveQueueEntryResponse(response.data);
   }
 
   Future<ActiveQueueEntryModel> getQueueEntryStatus(String entryId) async {
-    final response = await _dio.get<Map<String, dynamic>>('/queue-entries/$entryId/status');
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/queue-entries/$entryId/status',
+    );
     return ActiveQueueEntryModel.fromJson(response.data!);
   }
 
   Future<ActiveQueueEntryModel> cancelQueueEntry(String entryId) async {
-    final response = await _dio.post<Map<String, dynamic>>('/queue-entries/$entryId/cancel');
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/queue-entries/$entryId/cancel',
+    );
     return ActiveQueueEntryModel.fromJson(response.data!);
   }
 
-  Future<ActiveQueueEntryModel> checkInQueueEntry(String entryId, String qrCodeToken) async {
-    final response = await _dio.post<Map<String, dynamic>>('/queue-entries/$entryId/check-in', data: {'qrCodeToken': qrCodeToken});
+  Future<ActiveQueueEntryModel> checkInQueueEntry(
+    String entryId,
+    String qrCodeToken,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/queue-entries/$entryId/check-in',
+      data: {'qrCodeToken': qrCodeToken},
+    );
     return ActiveQueueEntryModel.fromJson(response.data!);
   }
+}
+
+ActiveQueueEntryModel? parseActiveQueueEntryResponse(Object? data) {
+  if (data == null || (data is String && data.trim().isEmpty)) {
+    return null;
+  }
+  if (data is Map<String, dynamic>) {
+    return ActiveQueueEntryModel.fromJson(data);
+  }
+  throw const FormatException('Invalid active queue response.');
 }

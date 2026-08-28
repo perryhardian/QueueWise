@@ -1,7 +1,10 @@
 import * as bcrypt from 'bcrypt';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { loadEnvFile } from 'node:process';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { QueueEntrySource, QueueEntryStatus, QueueStatus, Role } from '../src/generated/prisma/enums';
+
+loadEnvFile();
 
 const datasourceUrl = process.env['DATABASE_URL'];
 
@@ -32,6 +35,18 @@ async function main() {
 
   const categoryBySlug = new Map(categories.map((category) => [category.slug, category]));
   const passwordHash = await bcrypt.hash('password123', 12);
+
+  await prisma.user.upsert({
+    where: { email: 'customer@queuewise.test' },
+    update: { fullName: 'QueueWise Customer', role: Role.CUSTOMER },
+    create: {
+      fullName: 'QueueWise Customer',
+      email: 'customer@queuewise.test',
+      phoneNumber: '+628122222222',
+      passwordHash,
+      role: Role.CUSTOMER,
+    },
+  });
 
   const merchantUser = await prisma.user.upsert({
     where: { email: 'merchant@queuewise.test' },
@@ -129,27 +144,37 @@ async function main() {
       });
     }
 
-    const queue = await prisma.queue.create({
-      data: {
+    const existingQueue = await prisma.queue.findFirst({
+      where: {
         businessId: business.id,
-        status: QueueStatus.OPEN,
-        currentNumber: item.currentNumber,
-        nextSequence: item.waiting + 1,
-        averageServiceTimeMinutes: item.average,
-        openedAt: new Date(),
+        status: { in: [QueueStatus.OPEN, QueueStatus.PAUSED] },
       },
+      orderBy: { openedAt: 'desc' },
     });
 
-    for (let index = 1; index <= item.waiting; index += 1) {
-      await prisma.queueEntry.create({
+    if (!existingQueue) {
+      const queue = await prisma.queue.create({
         data: {
-          queueId: queue.id,
-          queueNumber: `${item.currentNumber.charAt(0)}${String(index + 12).padStart(3, '0')}`,
-          sequenceNumber: index,
-          source: QueueEntrySource.WALK_IN,
-          status: index === 1 ? QueueEntryStatus.CHECKED_IN : QueueEntryStatus.WAITING,
+          businessId: business.id,
+          status: QueueStatus.OPEN,
+          currentNumber: item.currentNumber,
+          nextSequence: item.waiting + 1,
+          averageServiceTimeMinutes: item.average,
+          openedAt: new Date(),
         },
       });
+
+      for (let index = 1; index <= item.waiting; index += 1) {
+        await prisma.queueEntry.create({
+          data: {
+            queueId: queue.id,
+            queueNumber: `${item.currentNumber.charAt(0)}${String(index + 12).padStart(3, '0')}`,
+            sequenceNumber: index,
+            source: QueueEntrySource.WALK_IN,
+            status: index === 1 ? QueueEntryStatus.CHECKED_IN : QueueEntryStatus.WAITING,
+          },
+        });
+      }
     }
   }
 }
