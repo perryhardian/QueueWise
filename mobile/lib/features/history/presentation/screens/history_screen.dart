@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../shared/widgets/app_page_header.dart';
 import '../../../../shared/widgets/state_views.dart';
 import '../../domain/entities/queue_history_item.dart';
 import '../controllers/queue_history_controller.dart';
@@ -14,45 +16,66 @@ class HistoryScreen extends ConsumerWidget {
     final historyState = ref.watch(queueHistoryControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('History'),
-        actions: [
-          IconButton(
-            tooltip: 'Refresh history',
-            onPressed: () => ref.invalidate(queueHistoryControllerProvider),
-            icon: const Icon(Icons.refresh),
-          ),
-        ],
-      ),
       body: SafeArea(
-        child: historyState.when(
-          data: (items) {
-            if (items.isEmpty) {
-              return const EmptyStateView(
-                title: 'No queue history yet',
-                message:
-                    'Completed, cancelled, and no-show visits will appear here.',
-                icon: Icons.history,
-              );
-            }
-
-            return RefreshIndicator(
-              onRefresh: () async =>
-                  ref.invalidate(queueHistoryControllerProvider),
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                itemCount: items.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 8),
-                itemBuilder: (context, index) =>
-                    _HistoryCard(item: items[index]),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.lg,
+                AppSpacing.lg,
+                AppSpacing.md,
               ),
-            );
-          },
-          loading: () => const LoadingStateView(),
-          error: (_, _) => ErrorStateView(
-            message: 'Unable to load queue history.',
-            onRetry: () => ref.invalidate(queueHistoryControllerProvider),
-          ),
+              child: AppPageHeader(
+                eyebrow: 'PAST VISITS',
+                title: 'Queue history',
+                subtitle: 'A record of your recent queue activity.',
+                trailing: IconButton.filledTonal(
+                  tooltip: 'Refresh history',
+                  onPressed: () =>
+                      ref.invalidate(queueHistoryControllerProvider),
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+              ),
+            ),
+            Expanded(
+              child: historyState.when(
+                data: (items) {
+                  if (items.isEmpty) {
+                    return const EmptyStateView(
+                      title: 'No queue history yet',
+                      message:
+                          'Completed, cancelled, and no-show visits will appear here.',
+                      icon: Icons.history,
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () async =>
+                        ref.invalidate(queueHistoryControllerProvider),
+                    child: ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.lg,
+                        0,
+                        AppSpacing.lg,
+                        AppSpacing.lg,
+                      ),
+                      itemCount: items.length,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: AppSpacing.sm),
+                      itemBuilder: (context, index) =>
+                          _HistoryCard(item: items[index]),
+                    ),
+                  );
+                },
+                loading: () => const LoadingStateView(),
+                error: (_, _) => ErrorStateView(
+                  message: 'Unable to load queue history.',
+                  onRetry: () => ref.invalidate(queueHistoryControllerProvider),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -66,14 +89,13 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     final dateText = DateFormat(
       'EEE, d MMM yyyy',
     ).format(item.completedAt ?? item.joinedAt);
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -92,9 +114,9 @@ class _HistoryCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         item.business.categoryName,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colors.onSurfaceVariant,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.muted),
                       ),
                     ],
                   ),
@@ -102,15 +124,15 @@ class _HistoryCard extends StatelessWidget {
                 _StatusChip(status: item.finalStatus),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Icon(
                   Icons.confirmation_number_outlined,
                   size: 20,
-                  color: colors.primary,
+                  color: AppColors.accent,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: Text(
                     'Queue ${item.queueNumber}',
@@ -121,13 +143,13 @@ class _HistoryCard extends StatelessWidget {
                 ),
                 Text(
                   dateText,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.muted),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
@@ -136,7 +158,7 @@ class _HistoryCard extends StatelessWidget {
                     value: _minutes(item.waitingMinutes),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: _Metric(
                     label: 'Service',
@@ -162,12 +184,14 @@ class _Metric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
+        color: AppColors.paper2,
+        borderRadius: BorderRadius.circular(AppRadii.input),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +200,7 @@ class _Metric extends StatelessWidget {
             label,
             style: Theme.of(
               context,
-            ).textTheme.labelSmall?.copyWith(color: colors.onSurfaceVariant),
+            ).textTheme.labelSmall?.copyWith(color: AppColors.muted),
           ),
           const SizedBox(height: 2),
           Text(
@@ -198,28 +222,23 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     final config = switch (status) {
       'COMPLETED' => (
         label: 'Completed',
         icon: Icons.task_alt,
-        color: colors.primary,
+        color: AppColors.accent,
       ),
       'CANCELLED' => (
         label: 'Cancelled',
         icon: Icons.cancel_outlined,
-        color: colors.error,
+        color: AppColors.error,
       ),
       'NO_SHOW' => (
         label: 'No-show',
         icon: Icons.person_off_outlined,
-        color: colors.tertiary,
+        color: AppColors.warning,
       ),
-      _ => (
-        label: status,
-        icon: Icons.info_outline,
-        color: colors.onSurfaceVariant,
-      ),
+      _ => (label: status, icon: Icons.info_outline, color: AppColors.muted),
     };
 
     return Semantics(

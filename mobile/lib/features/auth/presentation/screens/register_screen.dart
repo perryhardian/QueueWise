@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../core/ui/app_messenger.dart';
+import '../../../../shared/widgets/app_brand_mark.dart';
 import '../controllers/auth_controller.dart';
 import '../utils/auth_error_message.dart';
 import '../utils/auth_validation.dart';
@@ -76,9 +78,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ),
       ),
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.page,
+              AppSpacing.xs,
+              AppSpacing.page,
+              AppSpacing.section,
+            ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 460),
               child: AutofillGroup(
@@ -87,19 +95,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        'Create your account',
-                        style: textTheme.headlineMedium,
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: AppBrandMark(compact: true),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.section),
                       Text(
-                        'Join queues remotely or manage a business queue.',
-                        style: textTheme.bodyLarge,
+                        'Create your QueueWise account.',
+                        style: textTheme.headlineLarge,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Choose how you’ll use the app. Join queues as a customer or manage service as a merchant.',
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: AppColors.neutral,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
                       if (errorMessage != null) ...[
                         AuthErrorBanner(message: errorMessage),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.md),
                       ],
                       SegmentedButton<String>(
                         segments: const [
@@ -119,7 +134,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ? null
                             : (values) => setState(() => _role = values.first),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       AuthTextField(
                         controller: _fullNameController,
                         label: 'Full Name',
@@ -129,7 +144,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ? 'Enter your full name.'
                             : null,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       AuthTextField(
                         controller: _emailController,
                         label: 'Email',
@@ -138,7 +153,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         textInputAction: TextInputAction.next,
                         validator: validateEmailAddress,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       AuthTextField(
                         controller: _phoneController,
                         label: 'Phone Number',
@@ -146,7 +161,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         autofillHints: const [AutofillHints.telephoneNumber],
                         textInputAction: TextInputAction.next,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       AuthTextField(
                         controller: _passwordController,
                         label: 'Password',
@@ -158,7 +173,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                         validator: _validatePassword,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       AuthTextField(
                         controller: _confirmPasswordController,
                         label: 'Confirm Password',
@@ -171,7 +186,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                         validator: _validateConfirmPassword,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.lg),
                       FilledButton(
                         onPressed: isLoading ? null : _submit,
                         child: isLoading
@@ -181,14 +196,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text('Register'),
+                            : const Text('Create account'),
                       ),
                       const SizedBox(height: 12),
                       TextButton(
                         onPressed: isLoading
                             ? null
                             : () => context.go('/login'),
-                        child: const Text('Already have an account? Login'),
+                        child: const Text('Already have an account? Sign in'),
                       ),
                     ],
                   ),
@@ -227,7 +242,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             duration: Duration(seconds: 4),
             content: Row(
               children: [
-                Icon(Icons.check_circle_outline, color: Colors.white),
+                Icon(Icons.check_circle_outline, color: AppColors.accentInk),
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(

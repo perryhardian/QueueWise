@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../shared/widgets/app_brand_mark.dart';
 import '../controllers/auth_controller.dart';
 import '../utils/auth_error_message.dart';
 import '../utils/auth_validation.dart';
@@ -50,9 +52,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.page,
+              AppSpacing.lg,
+              AppSpacing.page,
+              AppSpacing.section,
+            ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 460),
               child: AutofillGroup(
@@ -61,27 +69,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Icon(
-                        Icons.timelapse_rounded,
-                        size: 48,
-                        color: Theme.of(context).colorScheme.primary,
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: AppBrandMark(),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
-                        'Welcome back',
-                        style: textTheme.headlineMedium,
-                        textAlign: TextAlign.center,
+                        'Your place in line, without the wait.',
+                        style: textTheme.headlineLarge,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Sign in to monitor queues and manage your turn.',
-                        style: textTheme.bodyLarge,
-                        textAlign: TextAlign.center,
+                        'Sign in to find nearby queues, join remotely, and track your turn.',
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: AppColors.neutral,
+                        ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: AppSpacing.section),
                       if (errorMessage != null) ...[
                         AuthErrorBanner(message: errorMessage),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.md),
                       ],
                       AuthTextField(
                         controller: _emailController,
@@ -91,7 +98,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         textInputAction: TextInputAction.next,
                         validator: validateEmailAddress,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       AuthTextField(
                         controller: _passwordController,
                         label: 'Password',
@@ -103,7 +110,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         validator: _validatePassword,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.lg),
                       FilledButton(
                         onPressed: isLoading ? null : _submit,
                         child: isLoading
@@ -113,14 +120,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text('Login'),
+                            : const Text('Sign in'),
                       ),
-                      const SizedBox(height: 12),
-                      TextButton(
-                        onPressed: isLoading
-                            ? null
-                            : () => context.go('/register'),
-                        child: const Text('Create an account'),
+                      const SizedBox(height: AppSpacing.lg),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            'New to QueueWise?',
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: AppColors.neutral,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.xxs),
+                          TextButton(
+                            onPressed: isLoading
+                                ? null
+                                : () => context.go('/register'),
+                            child: const Text('Create account'),
+                          ),
+                        ],
                       ),
                     ],
                   ),

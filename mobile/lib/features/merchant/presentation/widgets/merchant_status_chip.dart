@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_tokens.dart';
+
 class MerchantStatusChip extends StatelessWidget {
   const MerchantStatusChip({required this.status, super.key});
 
@@ -7,7 +9,6 @@ class MerchantStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     final normalized = status.replaceAll('_', ' ');
     final Color background;
     final Color foreground;
@@ -16,29 +17,30 @@ class MerchantStatusChip extends StatelessWidget {
       case 'OPEN':
       case 'WAITING':
       case 'CHECKED_IN':
-        background = colors.primaryContainer;
-        foreground = colors.onPrimaryContainer;
+        background = AppColors.accentSoft;
+        foreground = AppColors.ink;
       case 'CALLED':
       case 'SERVING':
-        background = colors.tertiaryContainer;
-        foreground = colors.onTertiaryContainer;
+        background = AppColors.infoContainer;
+        foreground = AppColors.info;
       case 'COMPLETED':
-        background = colors.secondaryContainer;
-        foreground = colors.onSecondaryContainer;
+        background = AppColors.paper3;
+        foreground = AppColors.neutral;
       case 'NO_SHOW':
       case 'CANCELLED':
       case 'CLOSED':
-        background = colors.errorContainer;
-        foreground = colors.onErrorContainer;
+        background = AppColors.errorContainer;
+        foreground = AppColors.error;
       default:
-        background = colors.surfaceContainerHighest;
-        foreground = colors.onSurfaceVariant;
+        background = AppColors.paper2;
+        foreground = AppColors.muted;
     }
 
     return Chip(
       backgroundColor: background,
       labelStyle: TextStyle(color: foreground, fontWeight: FontWeight.w600),
       side: BorderSide.none,
+      visualDensity: VisualDensity.compact,
       label: Text(normalized),
     );
   }

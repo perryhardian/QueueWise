@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_tokens.dart';
+
 class AuthErrorBanner extends StatelessWidget {
   const AuthErrorBanner({required this.message, super.key});
 
@@ -13,17 +15,23 @@ class AuthErrorBanner extends StatelessWidget {
       liveRegion: true,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: colors.errorContainer,
-          borderRadius: BorderRadius.circular(8),
+          color: AppColors.errorContainer,
+          border: Border.all(color: AppColors.error.withValues(alpha: 0.28)),
+          borderRadius: BorderRadius.circular(AppRadii.input),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.error_outline, color: colors.onErrorContainer),
-            const SizedBox(width: 8),
-            Expanded(child: Text(message, style: TextStyle(color: colors.onErrorContainer))),
+            const Icon(Icons.error_outline, color: AppColors.error),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(color: colors.onErrorContainer),
+              ),
+            ),
           ],
         ),
       ),

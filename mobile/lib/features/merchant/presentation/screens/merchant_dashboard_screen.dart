@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../shared/widgets/app_page_header.dart';
 import '../../../../shared/widgets/state_views.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../queue/presentation/widgets/queue_stat_tile.dart';
@@ -19,23 +21,6 @@ class MerchantDashboardScreen extends ConsumerWidget {
     final user = ref.watch(authControllerProvider).valueOrNull;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Merchant Dashboard'),
-        actions: [
-          IconButton(
-            tooltip: 'Refresh dashboard',
-            onPressed: () => ref
-                .read(merchantDashboardControllerProvider.notifier)
-                .refresh(),
-            icon: const Icon(Icons.refresh),
-          ),
-          IconButton(
-            tooltip: 'Logout',
-            onPressed: () => ref.read(authControllerProvider.notifier).logout(),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: dashboardState.when(
           data: (state) {
@@ -53,28 +38,50 @@ class MerchantDashboardScreen extends ConsumerWidget {
                   .read(merchantDashboardControllerProvider.notifier)
                   .refresh(),
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 children: [
-                  Text(
-                    'Hi, ${user?.fullName ?? 'Merchant'}',
-                    style: Theme.of(context).textTheme.titleMedium,
+                  AppPageHeader(
+                    eyebrow: 'LIVE OPERATIONS',
+                    title: 'Serve the queue',
+                    subtitle: 'Hi, ${user?.fullName ?? 'Merchant'}',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton.filledTonal(
+                          tooltip: 'Refresh dashboard',
+                          onPressed: () => ref
+                              .read(
+                                merchantDashboardControllerProvider.notifier,
+                              )
+                              .refresh(),
+                          icon: const Icon(Icons.refresh_rounded),
+                        ),
+                        IconButton(
+                          tooltip: 'Log out',
+                          onPressed: () => ref
+                              .read(authControllerProvider.notifier)
+                              .logout(),
+                          icon: const Icon(Icons.logout_rounded),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.xl),
                   if (state.queues.length > 1) ...[
                     _QueueSelector(state: state),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.sm),
                   ],
                   _DashboardHeader(
                     dashboard: state.dashboard!,
                     actionInProgress: state.actionInProgress,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   _StatsGrid(dashboard: state.dashboard!),
                   if (state.analytics != null) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     _AnalyticsSummary(analytics: state.analytics!),
                   ],
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   FilledButton.icon(
                     onPressed: state.actionInProgress
                         ? null
@@ -94,16 +101,15 @@ class MerchantDashboardScreen extends ConsumerWidget {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.campaign_outlined),
-                    label: const Text('Call Next Customer'),
+                    label: const Text('Call next customer'),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.section),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          'Queue List',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w700),
+                          'Queue list',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
                       Text(
@@ -112,10 +118,10 @@ class MerchantDashboardScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   if (state.dashboard!.entries.isEmpty)
                     const Padding(
-                      padding: EdgeInsets.only(top: 16),
+                      padding: EdgeInsets.only(top: AppSpacing.md),
                       child: EmptyStateView(
                         title: 'Queue is empty',
                         message:
@@ -126,7 +132,7 @@ class MerchantDashboardScreen extends ConsumerWidget {
                   else
                     ...state.dashboard!.entries.map(
                       (entry) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: MerchantQueueEntryCard(
                           entry: entry,
                           actionInProgress: state.actionInProgress,
@@ -296,11 +302,13 @@ class _DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Card(
-      color: colors.primaryContainer,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.ink,
+        borderRadius: BorderRadius.circular(AppRadii.hero),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -310,42 +318,40 @@ class _DashboardHeader extends StatelessWidget {
                 Expanded(
                   child: Text(
                     dashboard.business.name,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: colors.onPrimaryContainer,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(color: AppColors.paper),
                   ),
                 ),
                 MerchantStatusChip(status: dashboard.queue.status),
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               dashboard.business.address,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colors.onPrimaryContainer,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.paper3),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'NOW SERVING',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: colors.onPrimaryContainer,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(color: AppColors.paper3),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xxs),
             FittedBox(
               child: Text(
                 dashboard.nowServing ?? '-',
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: colors.onPrimaryContainer,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayMedium?.copyWith(color: AppColors.paper),
               ),
             ),
             if (actionInProgress) ...[
-              const SizedBox(height: 12),
-              LinearProgressIndicator(color: colors.onPrimaryContainer),
+              const SizedBox(height: AppSpacing.sm),
+              const LinearProgressIndicator(color: AppColors.accentSoft),
             ],
           ],
         ),
@@ -372,7 +378,7 @@ class _StatsGrid extends StatelessWidget {
                 icon: Icons.groups_outlined,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: QueueStatTile(
                 label: 'Checked-in',
@@ -382,7 +388,7 @@ class _StatsGrid extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Row(
           children: [
             Expanded(
@@ -392,7 +398,7 @@ class _StatsGrid extends StatelessWidget {
                 icon: Icons.task_alt,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: QueueStatTile(
                 label: 'Avg Service',

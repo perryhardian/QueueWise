@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../shared/widgets/state_views.dart';
 import '../controllers/active_queue_controller.dart';
 
@@ -30,12 +31,11 @@ class _QrCheckInScreenState extends ConsumerState<QrCheckInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final activeQueueState = ref.watch(activeQueueControllerProvider);
     final activeEntry = activeQueueState.valueOrNull;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('QR Check-in')),
+      appBar: AppBar(title: const Text('Check in')),
       body: SafeArea(
         child: activeQueueState.when(
           data: (entry) {
@@ -44,25 +44,32 @@ class _QrCheckInScreenState extends ConsumerState<QrCheckInScreen> {
                 title: 'No active queue',
                 message: 'Join a queue before scanning a check-in QR.',
                 icon: Icons.qr_code_scanner,
+                actionLabel: 'Back to my queue',
+                onAction: () => context.go('/my-queue'),
               );
             }
 
             return ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
                 if (activeEntry != null) ...[
                   Text(
                     activeEntry.business?.name ?? 'Active queue',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 4),
-                  Text('Queue number ${activeEntry.queueNumber}'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.xxs),
+                  Text(
+                    'Queue number ${activeEntry.queueNumber}',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
                 ],
                 AspectRatio(
                   aspectRatio: 1,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppRadii.hero),
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -76,10 +83,12 @@ class _QrCheckInScreenState extends ConsumerState<QrCheckInScreen> {
                             height: 220,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: colorScheme.primary,
+                                color: AppColors.accentSoft,
                                 width: 3,
                               ),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(
+                                AppRadii.card,
+                              ),
                             ),
                           ),
                         ),
@@ -87,8 +96,8 @@ class _QrCheckInScreenState extends ConsumerState<QrCheckInScreen> {
                           ColoredBox(
                             color: Colors.black45,
                             child: Center(
-                              child: CircularProgressIndicator(
-                                color: colorScheme.onPrimary,
+                              child: const CircularProgressIndicator(
+                                color: AppColors.paper,
                               ),
                             ),
                           ),
@@ -96,32 +105,37 @@ class _QrCheckInScreenState extends ConsumerState<QrCheckInScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   'Scan the check-in QR displayed at the business counter.',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  'Manual check-in code',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const SizedBox(height: AppSpacing.xs),
                 TextField(
                   controller: _manualTokenController,
                   enabled: !_submitting,
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
-                    labelText: 'Manual QR code',
+                    hintText: 'Enter code',
                     helperText:
-                        'Use this when testing without a camera QR image.',
+                        'Use this if the counter gives you a written code.',
                     prefixIcon: const Icon(Icons.pin_outlined),
                     errorText: _errorMessage,
                   ),
                   onSubmitted: _submitManualToken,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm),
                 FilledButton.icon(
                   onPressed: _submitting
                       ? null
                       : () => _submitManualToken(_manualTokenController.text),
                   icon: const Icon(Icons.fact_check_outlined),
-                  label: const Text('Confirm Check-in'),
+                  label: const Text('Confirm check-in'),
                 ),
               ],
             );

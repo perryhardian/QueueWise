@@ -1,0 +1,9 @@
+{
+  "date": "2026-08-28",
+  "framework": "Flutter with Material 3 and Riverpod",
+  "font_stack": "No custom fonts before redesign",
+  "palette": "Material seed green #1E7A5F on #F7F8FA",
+  "motion": "Flutter implicit and Material motion only",
+  "spacing": "Mostly raw 8/12/16/24 values",
+  "design_system": "design.md"
+}
