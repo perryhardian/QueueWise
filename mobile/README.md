@@ -1,17 +1,47 @@
-# queuewise
+# QueueWise mobile
 
-A new Flutter project.
+Flutter customer and merchant application for QueueWise.
 
-## Getting Started
+## Local setup
 
-This project is a starting point for a Flutter application.
+Copy `.env.example` to `.env`, set the API and WebSocket URLs for the target
+device, then run:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter pub get
+flutter run
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+For an Android emulator, the host machine is normally available at
+`10.0.2.2`. A physical device must use an address reachable from that device.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Verification
+
+```bash
+flutter analyze
+flutter test
+flutter build apk --debug
+```
+
+## Android release signing
+
+The application ID is `com.queuewise.queuewise`. Treat it as permanent after
+the first store release.
+
+Create an upload keystore at `android/app/upload-keystore.jks`, then create the
+ignored file `android/key.properties`:
+
+```properties
+storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=upload
+storeFile=app/upload-keystore.jks
+```
+
+Keystores and `key.properties` are ignored by Git. Keep secure backups outside
+the repository. Release builds intentionally fail when signing is not
+configured:
+
+```bash
+flutter build appbundle --release
+```

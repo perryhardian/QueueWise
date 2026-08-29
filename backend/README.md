@@ -23,7 +23,8 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+NestJS, PostgreSQL, Prisma, Socket.IO, and Firebase Admin backend for the
+QueueWise mobile application.
 
 ## Project setup
 
@@ -66,6 +67,18 @@ $ npm run test:cov
 ```
 
 ## Deployment
+
+Set the production environment variables from `.env.example`, then run:
+
+```bash
+npm ci
+npm run prisma:deploy
+npm run build
+npm run start:prod
+```
+
+`prisma:deploy` applies committed migrations without resetting data or prompting
+for schema changes. Do not use `prisma migrate dev` in production.
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
 
