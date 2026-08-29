@@ -13,6 +13,7 @@ import { QueueEntriesModule } from './queue-entries/queue-entries.module';
 import { QueuesModule } from './queues/queues.module';
 import { UsersModule } from './users/users.module';
 import { QueueRealtimeModule } from './websocket/queue-realtime.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { QueueRealtimeModule } from './websocket/queue-realtime.module';
     AnalyticsFeatureModule,
     QueueRealtimeModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}

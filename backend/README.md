@@ -50,6 +50,7 @@ $ npm run start
 $ npm run start:dev
 
 # production mode
+$ npm run build
 $ npm run start:prod
 ```
 
@@ -79,6 +80,19 @@ npm run start:prod
 
 `prisma:deploy` applies committed migrations without resetting data or prompting
 for schema changes. Do not use `prisma migrate dev` in production.
+
+The service exposes liveness at `/api/health` and database readiness at
+`/api/health/ready` when the default API prefix is used.
+
+For a container deployment, build the migration and runtime targets separately:
+
+```bash
+docker build --target migration -t queuewise-migration .
+docker run --rm --env-file .env.production queuewise-migration
+
+docker build --target runtime -t queuewise-backend .
+docker run --env-file .env.production -p 3000:3000 queuewise-backend
+```
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
 

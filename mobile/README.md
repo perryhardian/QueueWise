@@ -5,11 +5,11 @@ Flutter customer and merchant application for QueueWise.
 ## Local setup
 
 Copy `.env.example` to `.env`, set the API and WebSocket URLs for the target
-device, then run:
+device, then pass it as compile-time configuration:
 
 ```bash
 flutter pub get
-flutter run
+flutter run --dart-define-from-file=.env
 ```
 
 For an Android emulator, the host machine is normally available at
@@ -39,9 +39,26 @@ storeFile=app/upload-keystore.jks
 ```
 
 Keystores and `key.properties` are ignored by Git. Keep secure backups outside
-the repository. Release builds intentionally fail when signing is not
-configured:
+the repository.
 
-```bash
-flutter build appbundle --release
+## Firebase and Google Maps
+
+Run `flutterfire configure` for the production Firebase project. Android
+requires `android/app/google-services.json`; iOS requires
+`ios/Runner/GoogleService-Info.plist`. Configure Firebase Cloud Messaging and
+provide the matching Firebase Admin service account variables to the backend.
+
+Set a platform-restricted Google Maps key as `GOOGLE_MAPS_API_KEY` in the shell
+that performs the Android build.
+
+## Android release build
+
+Release builds require HTTPS API/WebSocket URLs, Android signing, Firebase
+configuration, and the Maps key:
+
+```powershell
+$env:GOOGLE_MAPS_API_KEY = 'your-restricted-google-maps-key'
+flutter build appbundle --release --dart-define-from-file=.env.production
 ```
+
+The output is `build/app/outputs/bundle/release/app-release.aab`.

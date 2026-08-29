@@ -7,6 +7,11 @@ plugins {
 }
 
 val keystorePropertiesFile = rootProject.file("key.properties")
+val googleServicesFile = file("google-services.json")
+if (googleServicesFile.exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 val keystoreProperties = Properties().apply {
     if (keystorePropertiesFile.exists()) {
         keystorePropertiesFile.inputStream().use(::load)
@@ -15,11 +20,24 @@ val keystoreProperties = Properties().apply {
 val releaseBuildRequested = gradle.startParameter.taskNames.any {
     it.contains("release", ignoreCase = true)
 }
+val googleMapsApiKey = providers.gradleProperty("GOOGLE_MAPS_API_KEY")
+    .orElse(providers.environmentVariable("GOOGLE_MAPS_API_KEY"))
+    .orNull
+    ?.trim()
+    .orEmpty()
 
-if (releaseBuildRequested && !keystorePropertiesFile.exists()) {
-    throw GradleException(
-        "Release signing is not configured. Create android/key.properties as documented in mobile/README.md.",
-    )
+if (releaseBuildRequested) {
+    val missingReleaseConfiguration = buildList {
+        if (!keystorePropertiesFile.exists()) add("android/key.properties (release signing)")
+        if (!googleServicesFile.exists()) add("android/app/google-services.json (Firebase)")
+        if (googleMapsApiKey.isBlank()) add("GOOGLE_MAPS_API_KEY (Gradle property or environment variable)")
+    }
+    if (missingReleaseConfiguration.isNotEmpty()) {
+        throw GradleException(
+            "Release configuration is incomplete: ${missingReleaseConfiguration.joinToString()}. " +
+                "See mobile/README.md.",
+        )
+    }
 }
 
 fun signingProperty(name: String): String =
@@ -44,6 +62,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["googleMapsApiKey"] = googleMapsApiKey
     }
 
     signingConfigs {
