@@ -11,6 +11,7 @@ const validProductionEnvironment = {
     'firebase-admin@queuewise-production.iam.gserviceaccount.com',
   FIREBASE_PRIVATE_KEY:
     '-----BEGIN PRIVATE KEY-----\\nprivate-key\\n-----END PRIVATE KEY-----',
+  PRIVACY_CONTACT_EMAIL: 'privacy@queuewise.example',
 };
 
 describe('validateEnvironment', () => {
@@ -38,6 +39,15 @@ describe('validateEnvironment', () => {
         FIREBASE_PRIVATE_KEY: '',
       }),
     ).toThrow('Firebase Admin credentials');
+  });
+
+  it('requires a privacy contact in production', () => {
+    expect(() =>
+      validateEnvironment({
+        ...validProductionEnvironment,
+        PRIVACY_CONTACT_EMAIL: '',
+      }),
+    ).toThrow('PRIVACY_CONTACT_EMAIL');
   });
 
   it('keeps Firebase optional during development', () => {

@@ -34,6 +34,8 @@ Production builds also require public HTTPS `PRIVACY_POLICY_URL` and
 password-confirmed in-app deletion flow. See
 `../PHASE_20_ACCOUNT_PRIVACY_CONTROLS.md` for deletion semantics and external
 policy requirements.
+The backend implementation of those public URLs is documented in
+`../PHASE_21_PUBLIC_LEGAL_PAGES.md`.
 
 ## Android release signing
 

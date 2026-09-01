@@ -1,5 +1,15 @@
 [
   {
+    "date": "2026-09-01",
+    "scope": "public legal pages",
+    "macrostructure": "Long Document",
+    "theme": "custom",
+    "theme_axes": "light / geometric-sans / chromatic-green",
+    "vibe": "warm, calm, utilitarian",
+    "enrichment": "none",
+    "brief": "QueueWise privacy policy and external account deletion"
+  },
+  {
     "date": "2026-08-28",
     "scope": "app",
     "macrostructure": "Workbench",

@@ -17,6 +17,9 @@
 - [x] Expose the configured privacy policy and external deletion page in-app.
 - [x] Delete authenticated accounts after current-password confirmation.
 - [ ] Publish the active privacy-policy and external deletion-request URLs.
+- [x] Provide repository-owned privacy-policy and deletion-request routes.
+- [ ] Deploy both routes and configure their final HTTPS URLs in the production
+  mobile build and Play Console.
 - [ ] Export the source icon as a 512 x 512, 32-bit PNG no larger than 1024 KB.
 - [ ] Capture at least two current phone screenshots from a production-like build.
 - [ ] Create a 1024 x 500 feature graphic without misleading claims.

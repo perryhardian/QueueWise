@@ -1,6 +1,11 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { QueueStatus, Role } from '../generated/prisma/enums';
+import type { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from './users.service';
 
 jest.mock('bcrypt', () => ({ compare: jest.fn() }));
@@ -24,10 +29,11 @@ describe('UsersService account deletion', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    prisma.$transaction.mockImplementation(async (operation) =>
-      operation(prisma),
+    prisma.$transaction.mockImplementation(
+      (operation: (client: typeof prisma) => unknown) =>
+        Promise.resolve(operation(prisma)),
     );
-    service = new UsersService(prisma as any);
+    service = new UsersService(prisma as unknown as PrismaService);
   });
 
   it('rejects deletion when the account no longer exists', async () => {
@@ -81,10 +87,49 @@ describe('UsersService account deletion', () => {
         business: { merchant: { userId: 'merchant-1' } },
         status: { in: [QueueStatus.OPEN, QueueStatus.PAUSED] },
       },
-      data: { status: QueueStatus.CLOSED, closedAt: expect.any(Date) },
+      data: {
+        status: QueueStatus.CLOSED,
+        closedAt: expect.any(Date) as Date,
+      },
     });
     expect(prisma.user.delete).toHaveBeenCalledWith({
       where: { id: 'merchant-1' },
+    });
+  });
+
+  it('uses the same public credential error when the email does not exist', async () => {
+    prisma.user.findUnique.mockResolvedValue(null);
+    jest.mocked(bcrypt.compare).mockResolvedValue(false as never);
+
+    await expect(
+      service.deleteByCredentials('missing@example.com', 'password123'),
+    ).rejects.toBeInstanceOf(UnauthorizedException);
+
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      'password123',
+      expect.stringMatching(/^\$2b\$12\$/),
+    );
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('deletes an account through verified public credentials', async () => {
+    prisma.user.findUnique.mockResolvedValue({
+      id: 'customer-2',
+      passwordHash: 'hash',
+      role: Role.CUSTOMER,
+    });
+    jest.mocked(bcrypt.compare).mockResolvedValue(true as never);
+
+    await expect(
+      service.deleteByCredentials(' USER@EXAMPLE.COM ', 'password123'),
+    ).resolves.toEqual({ success: true });
+
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { email: 'user@example.com' },
+      select: { id: true, passwordHash: true, role: true },
+    });
+    expect(prisma.user.delete).toHaveBeenCalledWith({
+      where: { id: 'customer-2' },
     });
   });
 });

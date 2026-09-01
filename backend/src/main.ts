@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -15,7 +15,15 @@ async function bootstrap() {
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-  app.setGlobalPrefix(apiPrefix);
+  app.setGlobalPrefix(apiPrefix, {
+    exclude: [
+      { path: 'privacy', method: RequestMethod.GET },
+      { path: 'delete-account', method: RequestMethod.GET },
+      { path: 'legal.css', method: RequestMethod.GET },
+      { path: 'legal.js', method: RequestMethod.GET },
+      { path: 'legal-fonts/:fileName', method: RequestMethod.GET },
+    ],
+  });
   app.enableCors({
     origin:
       corsOrigins.length > 0

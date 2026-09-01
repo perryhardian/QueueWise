@@ -21,6 +21,8 @@ Modern-minimal with a warm operational voice.
 - App pages: Workbench — status and primary task first, supporting detail second.
 - Auth pages: Workbench onboarding variation — brand context, then one clear form.
 - Content pages: Workbench index variation — search/filter controls, then results.
+- Public legal pages: Long Document — direct prose for policy content, with a
+  Workbench form variation for account deletion.
 
 ## Theme
 

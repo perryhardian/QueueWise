@@ -1,6 +1,7 @@
 import { plainToInstance, Type } from 'class-transformer';
 import {
   IsEnum,
+  IsEmail,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -69,6 +70,10 @@ class EnvironmentVariables {
   @IsOptional()
   @IsString()
   FIREBASE_PRIVATE_KEY?: string;
+
+  @IsOptional()
+  @IsEmail()
+  PRIVACY_CONTACT_EMAIL?: string;
 }
 
 export function validateEnvironment(config: Record<string, unknown>) {
@@ -114,6 +119,10 @@ export function validateEnvironment(config: Record<string, unknown>) {
       productionErrors.push(
         'Firebase Admin credentials are required in production.',
       );
+    }
+
+    if (!validatedConfig.PRIVACY_CONTACT_EMAIL?.trim()) {
+      productionErrors.push('PRIVACY_CONTACT_EMAIL is required in production.');
     }
 
     if (productionErrors.length > 0) {

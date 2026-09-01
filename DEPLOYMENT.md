@@ -21,6 +21,7 @@ Prepare these outside version control:
 - Android upload keystore and passwords.
 - Public HTTPS backend domain.
 - Public privacy-policy and external account-deletion URLs.
+- A monitored privacy contact email address.
 
 ## 2. Backend environment
 
@@ -40,10 +41,20 @@ JWT_REFRESH_EXPIRES_IN=7d
 FIREBASE_PROJECT_ID=your-firebase-project
 FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your-firebase-project.iam.gserviceaccount.com
 FIREBASE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+PRIVACY_CONTACT_EMAIL=privacy-contact@your-domain.example
 ```
 
 Native mobile apps do not require a CORS origin. Leave `CORS_ORIGINS` empty if
 QueueWise has no web client.
+
+The backend serves the public legal routes outside the API prefix:
+
+- `GET /privacy`
+- `GET /delete-account`
+
+Set the mobile release values to those routes on the deployed HTTPS host. The
+deletion form sends credentials only to the same host at
+`POST /<API_PREFIX>/account-deletion`.
 
 ## 3. Database and backend deployment
 
@@ -146,9 +157,12 @@ To deploy:
 3. Review the selected plans before approving resource creation.
 4. Enter `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and
    `FIREBASE_PRIVATE_KEY` when Render prompts for unsynced values.
-5. Keep the generated JWT secrets and database connection managed by Render.
-6. Confirm the pre-deploy migration and `/api/health/ready` check both pass.
-7. Run the GitHub `Production smoke test` workflow with:
+5. Enter a monitored `PRIVACY_CONTACT_EMAIL`; production startup rejects a
+   missing address so an incomplete policy cannot be published accidentally.
+6. Keep the generated JWT secrets and database connection managed by Render.
+7. Confirm the pre-deploy migration and `/api/health/ready` check both pass.
+8. Open `/privacy` and `/delete-account` on the public host, then run the GitHub
+   `Production smoke test` workflow with:
    - API URL: `https://<render-service-host>/api`
    - Socket URL: `https://<render-service-host>`
 

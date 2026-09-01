@@ -14,6 +14,7 @@ import { QueuesModule } from './queues/queues.module';
 import { UsersModule } from './users/users.module';
 import { QueueRealtimeModule } from './websocket/queue-realtime.module';
 import { HealthController } from './health/health.controller';
+import { LegalModule } from './legal/legal.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { HealthController } from './health/health.controller';
     NotificationsFeatureModule,
     AnalyticsFeatureModule,
     QueueRealtimeModule,
+    LegalModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

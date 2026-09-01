@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { QueueStatus, Role } from '../generated/prisma/enums';
@@ -9,6 +10,9 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
+  private static readonly invalidCredentialHash =
+    '$2b$12$dIyXOVACQsMXHfhp7nc60.lwSA9LrNnVOkBf39nzdRGnBdLiKWzTu';
+
   constructor(private readonly prisma: PrismaService) {}
 
   async findMe(userId: string) {
@@ -52,8 +56,34 @@ export class UsersService {
       throw new BadRequestException('Password is incorrect');
     }
 
+    await this.deleteUser(userId, user.role);
+    return { success: true };
+  }
+
+  async deleteByCredentials(
+    email: string,
+    password: string,
+  ): Promise<{ success: true }> {
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.trim().toLowerCase() },
+      select: { id: true, passwordHash: true, role: true },
+    });
+    const passwordMatches = await bcrypt.compare(
+      password,
+      user?.passwordHash ?? UsersService.invalidCredentialHash,
+    );
+
+    if (!user || !passwordMatches) {
+      throw new UnauthorizedException('Email or password is incorrect');
+    }
+
+    await this.deleteUser(user.id, user.role);
+    return { success: true };
+  }
+
+  private async deleteUser(userId: string, role: Role): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
-      if (user.role === Role.MERCHANT) {
+      if (role === Role.MERCHANT) {
         await tx.queue.updateMany({
           where: {
             business: { merchant: { userId } },
@@ -65,7 +95,5 @@ export class UsersService {
 
       await tx.user.delete({ where: { id: userId } });
     });
-
-    return { success: true };
   }
 }
