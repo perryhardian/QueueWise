@@ -93,10 +93,16 @@ Firebase Admin service-account values only in the backend secret manager.
 
 Create the upload keystore once and keep redundant secure backups. Configure
 the ignored `mobile/android/key.properties` file as documented in
-`mobile/README.md`.
+`mobile/README.md`. Configure the `production` GitHub environment and its
+release variables/secrets as documented in `PHASE_18_ANDROID_RELEASE_BUILD.md`.
 
-Restrict the Maps key to the Android application ID and signing certificate,
-then build:
+After the release workflow is merged to `main`, use **Actions > Android
+release** to produce the signed App Bundle. Supply an Android build number that
+is greater than every prior Play Console upload. The workflow artifact contains
+the `.aab` and its SHA-256 checksum and is retained for 14 days.
+
+For an emergency local build, restrict the Maps key to the Android application
+ID and signing certificate, then run:
 
 ```powershell
 Copy-Item .env.example .env.production

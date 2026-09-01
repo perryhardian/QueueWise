@@ -54,7 +54,13 @@ that performs the Android build.
 ## Android release build
 
 Release builds require HTTPS API/WebSocket URLs, Android signing, Firebase
-configuration, and the Maps key:
+configuration, and the Maps key. The recommended path is the manual
+`Android release` GitHub Actions workflow documented in
+`../PHASE_18_ANDROID_RELEASE_BUILD.md`. It validates the production inputs,
+builds a signed App Bundle from `main`, uploads the bundle with a checksum, and
+removes temporary credentials from the runner.
+
+For a local build:
 
 ```powershell
 $env:GOOGLE_MAPS_API_KEY = 'your-restricted-google-maps-key'
