@@ -29,6 +29,12 @@ checklist are under `store/google-play/`. See
 `../PHASE_19_ANDROID_STORE_READINESS.md` for the Android identity and remaining
 store-owner actions.
 
+Production builds also require public HTTPS `PRIVACY_POLICY_URL` and
+`ACCOUNT_DELETION_URL` values. The profile links to both pages and provides a
+password-confirmed in-app deletion flow. See
+`../PHASE_20_ACCOUNT_PRIVACY_CONTROLS.md` for deletion semantics and external
+policy requirements.
+
 ## Android release signing
 
 The application ID is `com.queuewise.queuewise`. Treat it as permanent after

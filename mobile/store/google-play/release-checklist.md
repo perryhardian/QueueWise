@@ -14,8 +14,9 @@
 
 - [ ] Merge the release-build branch and this stacked branch into `main` in order.
 - [ ] Provision and smoke-test the production backend.
-- [ ] Publish an active privacy-policy URL and expose the policy inside the app.
-- [ ] Define and test account/data deletion request handling.
+- [x] Expose the configured privacy policy and external deletion page in-app.
+- [x] Delete authenticated accounts after current-password confirmation.
+- [ ] Publish the active privacy-policy and external deletion-request URLs.
 - [ ] Export the source icon as a 512 x 512, 32-bit PNG no larger than 1024 KB.
 - [ ] Capture at least two current phone screenshots from a production-like build.
 - [ ] Create a 1024 x 500 feature graphic without misleading claims.

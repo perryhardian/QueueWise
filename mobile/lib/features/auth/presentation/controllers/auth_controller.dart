@@ -68,4 +68,12 @@ class AuthController extends AsyncNotifier<AuthUser?> {
     await _repository.logout();
     state = const AsyncData(null);
   }
+
+  Future<void> deleteAccount({required String password}) async {
+    if (state.valueOrNull == null) {
+      throw StateError('No authenticated account is available.');
+    }
+    await _repository.deleteAccount(password: password);
+    state = const AsyncData(null);
+  }
 }

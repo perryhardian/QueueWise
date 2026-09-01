@@ -28,6 +28,8 @@ and configure these environment variables:
 
 - `PRODUCTION_API_BASE_URL`, for example `https://api.example.com/api`
 - `PRODUCTION_SOCKET_URL`, for example `https://api.example.com`
+- `PRIVACY_POLICY_URL`, the active public QueueWise privacy policy
+- `ACCOUNT_DELETION_URL`, the external deletion-request page required by Play
 
 Configure these environment secrets:
 

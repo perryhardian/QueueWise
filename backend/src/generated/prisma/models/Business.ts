@@ -239,7 +239,7 @@ export type BusinessGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type BusinessGroupByOutputType = {
   id: string
-  merchantId: string
+  merchantId: string | null
   categoryId: string
   name: string
   description: string | null
@@ -279,7 +279,7 @@ export type BusinessWhereInput = {
   OR?: Prisma.BusinessWhereInput[]
   NOT?: Prisma.BusinessWhereInput | Prisma.BusinessWhereInput[]
   id?: Prisma.StringFilter<"Business"> | string
-  merchantId?: Prisma.StringFilter<"Business"> | string
+  merchantId?: Prisma.StringNullableFilter<"Business"> | string | null
   categoryId?: Prisma.StringFilter<"Business"> | string
   name?: Prisma.StringFilter<"Business"> | string
   description?: Prisma.StringNullableFilter<"Business"> | string | null
@@ -292,7 +292,7 @@ export type BusinessWhereInput = {
   qrCodeToken?: Prisma.StringFilter<"Business"> | string
   createdAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Business"> | Date | string
-  merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
+  merchant?: Prisma.XOR<Prisma.MerchantNullableScalarRelationFilter, Prisma.MerchantWhereInput> | null
   category?: Prisma.XOR<Prisma.BusinessCategoryScalarRelationFilter, Prisma.BusinessCategoryWhereInput>
   services?: Prisma.ServiceListRelationFilter
   queues?: Prisma.QueueListRelationFilter
@@ -301,7 +301,7 @@ export type BusinessWhereInput = {
 
 export type BusinessOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  merchantId?: Prisma.SortOrder
+  merchantId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -327,7 +327,7 @@ export type BusinessWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BusinessWhereInput | Prisma.BusinessWhereInput[]
   OR?: Prisma.BusinessWhereInput[]
   NOT?: Prisma.BusinessWhereInput | Prisma.BusinessWhereInput[]
-  merchantId?: Prisma.StringFilter<"Business"> | string
+  merchantId?: Prisma.StringNullableFilter<"Business"> | string | null
   categoryId?: Prisma.StringFilter<"Business"> | string
   name?: Prisma.StringFilter<"Business"> | string
   description?: Prisma.StringNullableFilter<"Business"> | string | null
@@ -339,7 +339,7 @@ export type BusinessWhereUniqueInput = Prisma.AtLeast<{
   rating?: Prisma.DecimalNullableFilter<"Business"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Business"> | Date | string
-  merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
+  merchant?: Prisma.XOR<Prisma.MerchantNullableScalarRelationFilter, Prisma.MerchantWhereInput> | null
   category?: Prisma.XOR<Prisma.BusinessCategoryScalarRelationFilter, Prisma.BusinessCategoryWhereInput>
   services?: Prisma.ServiceListRelationFilter
   queues?: Prisma.QueueListRelationFilter
@@ -348,7 +348,7 @@ export type BusinessWhereUniqueInput = Prisma.AtLeast<{
 
 export type BusinessOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  merchantId?: Prisma.SortOrder
+  merchantId?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -373,7 +373,7 @@ export type BusinessScalarWhereWithAggregatesInput = {
   OR?: Prisma.BusinessScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BusinessScalarWhereWithAggregatesInput | Prisma.BusinessScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Business"> | string
-  merchantId?: Prisma.StringWithAggregatesFilter<"Business"> | string
+  merchantId?: Prisma.StringNullableWithAggregatesFilter<"Business"> | string | null
   categoryId?: Prisma.StringWithAggregatesFilter<"Business"> | string
   name?: Prisma.StringWithAggregatesFilter<"Business"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Business"> | string | null
@@ -401,7 +401,7 @@ export type BusinessCreateInput = {
   qrCodeToken: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  merchant: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
+  merchant?: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
   category: Prisma.BusinessCategoryCreateNestedOneWithoutBusinessesInput
   services?: Prisma.ServiceCreateNestedManyWithoutBusinessInput
   queues?: Prisma.QueueCreateNestedManyWithoutBusinessInput
@@ -410,7 +410,7 @@ export type BusinessCreateInput = {
 
 export type BusinessUncheckedCreateInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   categoryId: string
   name: string
   description?: string | null
@@ -441,7 +441,7 @@ export type BusinessUpdateInput = {
   qrCodeToken?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  merchant?: Prisma.MerchantUpdateOneRequiredWithoutBusinessesNestedInput
+  merchant?: Prisma.MerchantUpdateOneWithoutBusinessesNestedInput
   category?: Prisma.BusinessCategoryUpdateOneRequiredWithoutBusinessesNestedInput
   services?: Prisma.ServiceUpdateManyWithoutBusinessNestedInput
   queues?: Prisma.QueueUpdateManyWithoutBusinessNestedInput
@@ -450,7 +450,7 @@ export type BusinessUpdateInput = {
 
 export type BusinessUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -470,7 +470,7 @@ export type BusinessUncheckedUpdateInput = {
 
 export type BusinessCreateManyInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   categoryId: string
   name: string
   description?: string | null
@@ -502,7 +502,7 @@ export type BusinessUpdateManyMutationInput = {
 
 export type BusinessUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -796,7 +796,7 @@ export type BusinessScalarWhereInput = {
   OR?: Prisma.BusinessScalarWhereInput[]
   NOT?: Prisma.BusinessScalarWhereInput | Prisma.BusinessScalarWhereInput[]
   id?: Prisma.StringFilter<"Business"> | string
-  merchantId?: Prisma.StringFilter<"Business"> | string
+  merchantId?: Prisma.StringNullableFilter<"Business"> | string | null
   categoryId?: Prisma.StringFilter<"Business"> | string
   name?: Prisma.StringFilter<"Business"> | string
   description?: Prisma.StringNullableFilter<"Business"> | string | null
@@ -824,7 +824,7 @@ export type BusinessCreateWithoutCategoryInput = {
   qrCodeToken: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  merchant: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
+  merchant?: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
   services?: Prisma.ServiceCreateNestedManyWithoutBusinessInput
   queues?: Prisma.QueueCreateNestedManyWithoutBusinessInput
   histories?: Prisma.QueueHistoryCreateNestedManyWithoutBusinessInput
@@ -832,7 +832,7 @@ export type BusinessCreateWithoutCategoryInput = {
 
 export type BusinessUncheckedCreateWithoutCategoryInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   name: string
   description?: string | null
   imageUrl?: string | null
@@ -888,7 +888,7 @@ export type BusinessCreateWithoutServicesInput = {
   qrCodeToken: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  merchant: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
+  merchant?: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
   category: Prisma.BusinessCategoryCreateNestedOneWithoutBusinessesInput
   queues?: Prisma.QueueCreateNestedManyWithoutBusinessInput
   histories?: Prisma.QueueHistoryCreateNestedManyWithoutBusinessInput
@@ -896,7 +896,7 @@ export type BusinessCreateWithoutServicesInput = {
 
 export type BusinessUncheckedCreateWithoutServicesInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   categoryId: string
   name: string
   description?: string | null
@@ -942,7 +942,7 @@ export type BusinessUpdateWithoutServicesInput = {
   qrCodeToken?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  merchant?: Prisma.MerchantUpdateOneRequiredWithoutBusinessesNestedInput
+  merchant?: Prisma.MerchantUpdateOneWithoutBusinessesNestedInput
   category?: Prisma.BusinessCategoryUpdateOneRequiredWithoutBusinessesNestedInput
   queues?: Prisma.QueueUpdateManyWithoutBusinessNestedInput
   histories?: Prisma.QueueHistoryUpdateManyWithoutBusinessNestedInput
@@ -950,7 +950,7 @@ export type BusinessUpdateWithoutServicesInput = {
 
 export type BusinessUncheckedUpdateWithoutServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -980,7 +980,7 @@ export type BusinessCreateWithoutQueuesInput = {
   qrCodeToken: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  merchant: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
+  merchant?: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
   category: Prisma.BusinessCategoryCreateNestedOneWithoutBusinessesInput
   services?: Prisma.ServiceCreateNestedManyWithoutBusinessInput
   histories?: Prisma.QueueHistoryCreateNestedManyWithoutBusinessInput
@@ -988,7 +988,7 @@ export type BusinessCreateWithoutQueuesInput = {
 
 export type BusinessUncheckedCreateWithoutQueuesInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   categoryId: string
   name: string
   description?: string | null
@@ -1034,7 +1034,7 @@ export type BusinessUpdateWithoutQueuesInput = {
   qrCodeToken?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  merchant?: Prisma.MerchantUpdateOneRequiredWithoutBusinessesNestedInput
+  merchant?: Prisma.MerchantUpdateOneWithoutBusinessesNestedInput
   category?: Prisma.BusinessCategoryUpdateOneRequiredWithoutBusinessesNestedInput
   services?: Prisma.ServiceUpdateManyWithoutBusinessNestedInput
   histories?: Prisma.QueueHistoryUpdateManyWithoutBusinessNestedInput
@@ -1042,7 +1042,7 @@ export type BusinessUpdateWithoutQueuesInput = {
 
 export type BusinessUncheckedUpdateWithoutQueuesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1072,7 +1072,7 @@ export type BusinessCreateWithoutHistoriesInput = {
   qrCodeToken: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  merchant: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
+  merchant?: Prisma.MerchantCreateNestedOneWithoutBusinessesInput
   category: Prisma.BusinessCategoryCreateNestedOneWithoutBusinessesInput
   services?: Prisma.ServiceCreateNestedManyWithoutBusinessInput
   queues?: Prisma.QueueCreateNestedManyWithoutBusinessInput
@@ -1080,7 +1080,7 @@ export type BusinessCreateWithoutHistoriesInput = {
 
 export type BusinessUncheckedCreateWithoutHistoriesInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   categoryId: string
   name: string
   description?: string | null
@@ -1126,7 +1126,7 @@ export type BusinessUpdateWithoutHistoriesInput = {
   qrCodeToken?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  merchant?: Prisma.MerchantUpdateOneRequiredWithoutBusinessesNestedInput
+  merchant?: Prisma.MerchantUpdateOneWithoutBusinessesNestedInput
   category?: Prisma.BusinessCategoryUpdateOneRequiredWithoutBusinessesNestedInput
   services?: Prisma.ServiceUpdateManyWithoutBusinessNestedInput
   queues?: Prisma.QueueUpdateManyWithoutBusinessNestedInput
@@ -1134,7 +1134,7 @@ export type BusinessUpdateWithoutHistoriesInput = {
 
 export type BusinessUncheckedUpdateWithoutHistoriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1223,7 +1223,7 @@ export type BusinessUncheckedUpdateManyWithoutMerchantInput = {
 
 export type BusinessCreateManyCategoryInput = {
   id?: string
-  merchantId: string
+  merchantId?: string | null
   name: string
   description?: string | null
   imageUrl?: string | null
@@ -1250,7 +1250,7 @@ export type BusinessUpdateWithoutCategoryInput = {
   qrCodeToken?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  merchant?: Prisma.MerchantUpdateOneRequiredWithoutBusinessesNestedInput
+  merchant?: Prisma.MerchantUpdateOneWithoutBusinessesNestedInput
   services?: Prisma.ServiceUpdateManyWithoutBusinessNestedInput
   queues?: Prisma.QueueUpdateManyWithoutBusinessNestedInput
   histories?: Prisma.QueueHistoryUpdateManyWithoutBusinessNestedInput
@@ -1258,7 +1258,7 @@ export type BusinessUpdateWithoutCategoryInput = {
 
 export type BusinessUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1277,7 +1277,7 @@ export type BusinessUncheckedUpdateWithoutCategoryInput = {
 
 export type BusinessUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1355,7 +1355,7 @@ export type BusinessSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   qrCodeToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  merchant?: boolean | Prisma.Business$merchantArgs<ExtArgs>
   category?: boolean | Prisma.BusinessCategoryDefaultArgs<ExtArgs>
   services?: boolean | Prisma.Business$servicesArgs<ExtArgs>
   queues?: boolean | Prisma.Business$queuesArgs<ExtArgs>
@@ -1378,7 +1378,7 @@ export type BusinessSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   qrCodeToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  merchant?: boolean | Prisma.Business$merchantArgs<ExtArgs>
   category?: boolean | Prisma.BusinessCategoryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["business"]>
 
@@ -1397,7 +1397,7 @@ export type BusinessSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   qrCodeToken?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  merchant?: boolean | Prisma.Business$merchantArgs<ExtArgs>
   category?: boolean | Prisma.BusinessCategoryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["business"]>
 
@@ -1420,7 +1420,7 @@ export type BusinessSelectScalar = {
 
 export type BusinessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "categoryId" | "name" | "description" | "imageUrl" | "address" | "latitude" | "longitude" | "openingHours" | "rating" | "qrCodeToken" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
 export type BusinessInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  merchant?: boolean | Prisma.Business$merchantArgs<ExtArgs>
   category?: boolean | Prisma.BusinessCategoryDefaultArgs<ExtArgs>
   services?: boolean | Prisma.Business$servicesArgs<ExtArgs>
   queues?: boolean | Prisma.Business$queuesArgs<ExtArgs>
@@ -1428,18 +1428,18 @@ export type BusinessInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   _count?: boolean | Prisma.BusinessCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BusinessIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  merchant?: boolean | Prisma.Business$merchantArgs<ExtArgs>
   category?: boolean | Prisma.BusinessCategoryDefaultArgs<ExtArgs>
 }
 export type BusinessIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  merchant?: boolean | Prisma.Business$merchantArgs<ExtArgs>
   category?: boolean | Prisma.BusinessCategoryDefaultArgs<ExtArgs>
 }
 
 export type $BusinessPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Business"
   objects: {
-    merchant: Prisma.$MerchantPayload<ExtArgs>
+    merchant: Prisma.$MerchantPayload<ExtArgs> | null
     category: Prisma.$BusinessCategoryPayload<ExtArgs>
     services: Prisma.$ServicePayload<ExtArgs>[]
     queues: Prisma.$QueuePayload<ExtArgs>[]
@@ -1447,7 +1447,7 @@ export type $BusinessPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    merchantId: string
+    merchantId: string | null
     categoryId: string
     name: string
     description: string | null
@@ -1854,7 +1854,7 @@ readonly fields: BusinessFieldRefs;
  */
 export interface Prisma__BusinessClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  merchant<T extends Prisma.MerchantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantDefaultArgs<ExtArgs>>): Prisma.Prisma__MerchantClient<runtime.Types.Result.GetResult<Prisma.$MerchantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  merchant<T extends Prisma.Business$merchantArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$merchantArgs<ExtArgs>>): Prisma.Prisma__MerchantClient<runtime.Types.Result.GetResult<Prisma.$MerchantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.BusinessCategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessCategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__BusinessCategoryClient<runtime.Types.Result.GetResult<Prisma.$BusinessCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   services<T extends Prisma.Business$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   queues<T extends Prisma.Business$queuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$queuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QueuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2300,6 +2300,25 @@ export type BusinessDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Businesses to delete.
    */
   limit?: number
+}
+
+/**
+ * Business.merchant
+ */
+export type Business$merchantArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Merchant
+   */
+  select?: Prisma.MerchantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Merchant
+   */
+  omit?: Prisma.MerchantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MerchantInclude<ExtArgs> | null
+  where?: Prisma.MerchantWhereInput
 }
 
 /**

@@ -28,6 +28,8 @@ the backend but is not currently connected to a mobile location permission.
   current Google Play definitions.
 - Confirm that all production traffic is encrypted in transit.
 - Define account deletion, data deletion request, and retention procedures.
+- Confirm and disclose the retention of de-identified queue and business records
+  after account deletion.
 - Review Firebase Cloud Messaging collection and subprocessors against the
   production Firebase setup.
 - Review whether hosting, database, email, support, analytics, or crash-reporting

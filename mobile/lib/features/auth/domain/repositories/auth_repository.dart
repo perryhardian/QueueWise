@@ -12,4 +12,5 @@ abstract class AuthRepository {
     String? merchantDisplayName,
   });
   Future<void> logout();
+  Future<void> deleteAccount({required String password});
 }

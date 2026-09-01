@@ -37,7 +37,10 @@ class AuthRemoteDataSource {
     return AuthResponseModel.fromJson(response.data!);
   }
 
-  Future<AuthResponseModel> login({required String email, required String password}) async {
+  Future<AuthResponseModel> login({
+    required String email,
+    required String password,
+  }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/auth/login',
       data: {'email': email, 'password': password},
@@ -53,5 +56,9 @@ class AuthRemoteDataSource {
 
   Future<void> logout(String refreshToken) async {
     await _dio.post<void>('/auth/logout', data: {'refreshToken': refreshToken});
+  }
+
+  Future<void> deleteAccount({required String password}) async {
+    await _dio.delete<void>('/users/me', data: {'password': password});
   }
 }

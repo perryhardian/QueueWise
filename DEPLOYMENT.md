@@ -20,6 +20,7 @@ Prepare these outside version control:
 - A platform-restricted Google Maps API key.
 - Android upload keystore and passwords.
 - Public HTTPS backend domain.
+- Public privacy-policy and external account-deletion URLs.
 
 ## 2. Backend environment
 
@@ -95,6 +96,8 @@ Create the upload keystore once and keep redundant secure backups. Configure
 the ignored `mobile/android/key.properties` file as documented in
 `mobile/README.md`. Configure the `production` GitHub environment and its
 release variables/secrets as documented in `PHASE_18_ANDROID_RELEASE_BUILD.md`.
+The environment must include `PRIVACY_POLICY_URL` and `ACCOUNT_DELETION_URL` as
+described in `PHASE_20_ACCOUNT_PRIVACY_CONTROLS.md`.
 
 After the release workflow is merged to `main`, use **Actions > Android
 release** to produce the signed App Bundle. Supply an Android build number that

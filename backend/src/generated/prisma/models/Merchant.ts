@@ -319,11 +319,6 @@ export type MerchantMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type MerchantScalarRelationFilter = {
-  is?: Prisma.MerchantWhereInput
-  isNot?: Prisma.MerchantWhereInput
-}
-
 export type MerchantCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.MerchantCreateWithoutUserInput, Prisma.MerchantUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutUserInput
@@ -362,10 +357,12 @@ export type MerchantCreateNestedOneWithoutBusinessesInput = {
   connect?: Prisma.MerchantWhereUniqueInput
 }
 
-export type MerchantUpdateOneRequiredWithoutBusinessesNestedInput = {
+export type MerchantUpdateOneWithoutBusinessesNestedInput = {
   create?: Prisma.XOR<Prisma.MerchantCreateWithoutBusinessesInput, Prisma.MerchantUncheckedCreateWithoutBusinessesInput>
   connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutBusinessesInput
   upsert?: Prisma.MerchantUpsertWithoutBusinessesInput
+  disconnect?: Prisma.MerchantWhereInput | boolean
+  delete?: Prisma.MerchantWhereInput | boolean
   connect?: Prisma.MerchantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutBusinessesInput, Prisma.MerchantUpdateWithoutBusinessesInput>, Prisma.MerchantUncheckedUpdateWithoutBusinessesInput>
 }

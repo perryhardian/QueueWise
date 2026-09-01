@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:queuewise/core/legal/legal_config.dart';
 import 'package:queuewise/core/network/api_config.dart';
 
 const _androidPackageName = 'com.queuewise.queuewise';
@@ -13,6 +14,8 @@ class AndroidReleaseInputs {
     required this.buildNumber,
     required this.apiBaseUrl,
     required this.socketUrl,
+    required this.privacyPolicyUrl,
+    required this.accountDeletionUrl,
     required this.uploadKeystoreBase64,
     required this.keystorePassword,
     required this.keyPassword,
@@ -28,6 +31,8 @@ class AndroidReleaseInputs {
       'BUILD_NUMBER',
       'PRODUCTION_API_BASE_URL',
       'PRODUCTION_SOCKET_URL',
+      'PRIVACY_POLICY_URL',
+      'ACCOUNT_DELETION_URL',
       'ANDROID_UPLOAD_KEYSTORE_BASE64',
       'ANDROID_KEYSTORE_PASSWORD',
       'ANDROID_KEY_PASSWORD',
@@ -48,6 +53,8 @@ class AndroidReleaseInputs {
       buildNumber: environment['BUILD_NUMBER']!,
       apiBaseUrl: environment['PRODUCTION_API_BASE_URL']!,
       socketUrl: environment['PRODUCTION_SOCKET_URL']!,
+      privacyPolicyUrl: environment['PRIVACY_POLICY_URL']!,
+      accountDeletionUrl: environment['ACCOUNT_DELETION_URL']!,
       uploadKeystoreBase64: environment['ANDROID_UPLOAD_KEYSTORE_BASE64']!,
       keystorePassword: environment['ANDROID_KEYSTORE_PASSWORD']!,
       keyPassword: environment['ANDROID_KEY_PASSWORD']!,
@@ -61,6 +68,8 @@ class AndroidReleaseInputs {
   final String buildNumber;
   final String apiBaseUrl;
   final String socketUrl;
+  final String privacyPolicyUrl;
+  final String accountDeletionUrl;
   final String uploadKeystoreBase64;
   final String keystorePassword;
   final String keyPassword;
@@ -90,6 +99,10 @@ PreparedAndroidRelease prepareAndroidRelease(
   validateDeploymentUrls(
     apiBaseUrl: inputs.apiBaseUrl,
     socketUrl: inputs.socketUrl,
+  );
+  validateLegalUrls(
+    privacyPolicyUrl: inputs.privacyPolicyUrl,
+    accountDeletionUrl: inputs.accountDeletionUrl,
   );
   _validateSingleLine('ANDROID_KEYSTORE_PASSWORD', inputs.keystorePassword);
   _validateSingleLine('ANDROID_KEY_PASSWORD', inputs.keyPassword);
@@ -140,7 +153,9 @@ PreparedAndroidRelease prepareAndroidRelease(
   );
   environmentFile.writeAsStringSync(
     'API_BASE_URL=${inputs.apiBaseUrl.trim()}\n'
-    'SOCKET_URL=${inputs.socketUrl.trim()}\n',
+    'SOCKET_URL=${inputs.socketUrl.trim()}\n'
+    'PRIVACY_POLICY_URL=${inputs.privacyPolicyUrl.trim()}\n'
+    'ACCOUNT_DELETION_URL=${inputs.accountDeletionUrl.trim()}\n',
     flush: true,
   );
 

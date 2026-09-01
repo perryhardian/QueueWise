@@ -36,14 +36,30 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthUser> login({required String email, required String password}) async {
-    final response = await remoteDataSource.login(email: email, password: password);
-    await localDataSource.saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken);
+  Future<AuthUser> login({
+    required String email,
+    required String password,
+  }) async {
+    final response = await remoteDataSource.login(
+      email: email,
+      password: password,
+    );
+    await localDataSource.saveTokens(
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+    );
     return response.user;
   }
 
   @override
-  Future<AuthUser> register({required String fullName, required String email, required String phoneNumber, required String password, required String role, String? merchantDisplayName}) async {
+  Future<AuthUser> register({
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+    required String password,
+    required String role,
+    String? merchantDisplayName,
+  }) async {
     final response = await remoteDataSource.register(
       fullName: fullName,
       email: email,
@@ -52,7 +68,10 @@ class AuthRepositoryImpl implements AuthRepository {
       role: role,
       merchantDisplayName: merchantDisplayName,
     );
-    await localDataSource.saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken);
+    await localDataSource.saveTokens(
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+    );
     return response.user;
   }
 
@@ -66,6 +85,12 @@ class AuthRepositoryImpl implements AuthRepository {
         // Local logout should still clear tokens when the network is unavailable.
       }
     }
+    await localDataSource.clearTokens();
+  }
+
+  @override
+  Future<void> deleteAccount({required String password}) async {
+    await remoteDataSource.deleteAccount(password: password);
     await localDataSource.clearTokens();
   }
 }

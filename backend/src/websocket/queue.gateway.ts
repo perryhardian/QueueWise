@@ -1,10 +1,17 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { OnGatewayConnection, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import type { Server, Socket } from 'socket.io';
 import type { AuthenticatedUser } from '../auth/auth.types';
 import type { JwtPayload } from '../auth/jwt-payload';
+import { PrismaService } from '../prisma/prisma.service';
 import { QueueEventsService } from './queue-events.service';
 
 @WebSocketGateway({
@@ -21,6 +28,7 @@ export class QueueGateway implements OnGatewayInit, OnGatewayConnection {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly queueEventsService: QueueEventsService,
+    private readonly prisma: PrismaService,
   ) {}
 
   afterInit(server: Server) {
@@ -66,25 +74,48 @@ export class QueueGateway implements OnGatewayInit, OnGatewayConnection {
     const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
       secret: this.configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
     });
+    if (!payload.sessionId) {
+      throw new UnauthorizedException('Session is no longer active');
+    }
+
+    const session = await this.prisma.authSession.findFirst({
+      where: {
+        id: payload.sessionId,
+        userId: payload.sub,
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      select: {
+        user: {
+          select: { id: true, email: true, role: true },
+        },
+      },
+    });
+    if (!session) {
+      throw new UnauthorizedException('Session is no longer active');
+    }
 
     return {
-      id: payload.sub,
-      email: payload.email,
-      role: payload.role,
+      id: session.user.id,
+      email: session.user.email,
+      role: session.user.role,
       sessionId: payload.sessionId,
     };
   }
 
   private extractToken(client: Socket) {
     const authToken = client.handshake.auth?.token;
-    if (typeof authToken === 'string' && authToken.trim()) return authToken.trim();
+    if (typeof authToken === 'string' && authToken.trim())
+      return authToken.trim();
 
     const header = client.handshake.headers.authorization;
-    if (typeof header === 'string' && header.startsWith('Bearer ')) return header.slice(7).trim();
+    if (typeof header === 'string' && header.startsWith('Bearer '))
+      return header.slice(7).trim();
     return null;
   }
 
   private assertAuthenticated(client: Socket) {
-    if (!client.data.user) throw new UnauthorizedException('Socket is not authenticated');
+    if (!client.data.user)
+      throw new UnauthorizedException('Socket is not authenticated');
   }
 }

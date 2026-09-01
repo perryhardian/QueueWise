@@ -44,7 +44,9 @@ void main() {
     expect(
       prepared.environmentFile.readAsStringSync(),
       'API_BASE_URL=https://api.queuewise.example/api\n'
-      'SOCKET_URL=https://api.queuewise.example\n',
+      'SOCKET_URL=https://api.queuewise.example\n'
+      'PRIVACY_POLICY_URL=https://queuewise.example/privacy\n'
+      'ACCOUNT_DELETION_URL=https://queuewise.example/delete-account\n',
     );
   });
 
@@ -133,6 +135,8 @@ AndroidReleaseInputs _validInputs({
     buildNumber: buildNumber,
     apiBaseUrl: apiBaseUrl,
     socketUrl: socketUrl,
+    privacyPolicyUrl: 'https://queuewise.example/privacy',
+    accountDeletionUrl: 'https://queuewise.example/delete-account',
     uploadKeystoreBase64: uploadKeystoreBase64,
     keystorePassword: keystorePassword,
     keyPassword: 'key-password',

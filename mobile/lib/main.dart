@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/legal/legal_config.dart';
 import 'core/network/api_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -11,6 +12,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   if (kReleaseMode) {
     ApiConfig.validateForRelease();
+    LegalConfig.validateForRelease();
   }
 
   runApp(const ProviderScope(child: QueueWiseApp()));
