@@ -20,8 +20,14 @@ For an Android emulator, the host machine is normally available at
 ```bash
 flutter analyze
 flutter test
+flutter pub run tool/validate_google_play_assets.dart
 flutter build apk --debug
 ```
+
+Google Play listing copy, the engineering Data Safety draft, and the submission
+checklist are under `store/google-play/`. See
+`../PHASE_19_ANDROID_STORE_READINESS.md` for the Android identity and remaining
+store-owner actions.
 
 ## Android release signing
 

@@ -83,6 +83,9 @@ jobs:
       - name: Run mobile tests
         run: flutter test
 
+      - name: Validate Google Play assets
+        run: flutter pub run tool/validate_google_play_assets.dart
+
   backend-container:
     name: Backend container
     runs-on: ubuntu-latest
