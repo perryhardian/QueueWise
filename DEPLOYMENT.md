@@ -60,6 +60,18 @@ and Socket.IO connections reach the same service.
 
 Do not run the demo seed against production.
 
+After the runtime is reachable, verify liveness, database readiness, and the
+Socket.IO polling handshake from `backend/`:
+
+```powershell
+$env:QUEUEWISE_API_URL = 'https://api.example.com/api'
+$env:QUEUEWISE_SOCKET_URL = 'https://api.example.com'
+npm run verify:deployment
+```
+
+The same check can be started from GitHub Actions with the `Production smoke
+test` workflow. Its URL inputs are public deployment addresses, not secrets.
+
 ## 4. Firebase
 
 From `mobile/`, authenticate the Firebase CLI and run:

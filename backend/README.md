@@ -84,6 +84,17 @@ for schema changes. Do not use `prisma migrate dev` in production.
 The service exposes liveness at `/api/health` and database readiness at
 `/api/health/ready` when the default API prefix is used.
 
+After deployment, verify the public HTTPS endpoints and Socket.IO transport:
+
+```powershell
+$env:QUEUEWISE_API_URL = 'https://api.example.com/api'
+$env:QUEUEWISE_SOCKET_URL = 'https://api.example.com'
+npm run verify:deployment
+```
+
+The verifier requires Node.js 22 and does not require production credentials.
+Run its focused test suite with `npm run test:deployment`.
+
 For a container deployment, build the migration and runtime targets separately:
 
 ```bash

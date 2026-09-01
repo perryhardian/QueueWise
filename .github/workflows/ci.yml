@@ -50,6 +50,9 @@ jobs:
       - name: Run backend tests
         run: npm test -- --runInBand
 
+      - name: Run deployment verifier tests
+        run: npm run test:deployment
+
   mobile:
     name: Mobile checks
     runs-on: ubuntu-latest
