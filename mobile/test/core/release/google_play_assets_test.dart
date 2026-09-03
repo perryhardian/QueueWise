@@ -52,6 +52,67 @@ void main() {
     expect(dimensions.height, 1024);
   });
 
+  test('accepts compliant Play graphics', () {
+    expect(
+      () => validatePlayIcon(_pngHeader(width: 512, height: 512, colorType: 6)),
+      returnsNormally,
+    );
+    expect(
+      () => validateFeatureGraphic(_pngHeader(width: 1024, height: 500)),
+      returnsNormally,
+    );
+    expect(
+      () => validatePhoneScreenshots(
+        List.generate(4, (_) => _pngHeader(width: 1080, height: 1920)),
+      ),
+      returnsNormally,
+    );
+  });
+
+  test('rejects invalid Play graphic formats and dimensions', () {
+    expect(
+      () => validatePlayIcon(_pngHeader(width: 512, height: 512)),
+      throwsFormatException,
+    );
+    expect(
+      () => validateFeatureGraphic(
+        _pngHeader(width: 1024, height: 500, colorType: 6),
+      ),
+      throwsFormatException,
+    );
+    expect(
+      () => validatePhoneScreenshots(
+        List.generate(4, (_) => _pngHeader(width: 1080, height: 2400)),
+      ),
+      throwsFormatException,
+    );
+  });
+
+  test('requires complete, concise graphic alt text', () {
+    expect(
+      () => validateGraphicAltText(
+        json: const <String, dynamic>{
+          'featureGraphic': 'QueueWise queue status illustration.',
+          'phoneScreenshots': <String, dynamic>{
+            '01-home.png': 'QueueWise customer home screen.',
+          },
+        },
+        screenshotFileNames: const {'01-home.png'},
+      ),
+      returnsNormally,
+    );
+    expect(
+      () => validateGraphicAltText(
+        json: const <String, dynamic>{
+          'featureGraphic': '',
+          'phoneScreenshots': <String, dynamic>{},
+        },
+        screenshotFileNames: const {'01-home.png'},
+      ),
+      throwsFormatException,
+    );
+  });
+
   test('rejects non-square and undersized launcher sources', () {
     expect(
       () => validateLauncherIconSource(_pngHeader(width: 512, height: 256)),
@@ -64,12 +125,18 @@ void main() {
   });
 }
 
-Uint8List _pngHeader({required int width, required int height}) {
-  final bytes = Uint8List(24);
+Uint8List _pngHeader({
+  required int width,
+  required int height,
+  int colorType = 2,
+}) {
+  final bytes = Uint8List(26);
   bytes.setRange(0, 8, const <int>[137, 80, 78, 71, 13, 10, 26, 10]);
   bytes.setRange(12, 16, ascii.encode('IHDR'));
   final data = ByteData.sublistView(bytes);
   data.setUint32(16, width);
   data.setUint32(20, height);
+  bytes[24] = 8;
+  bytes[25] = colorType;
   return bytes;
 }

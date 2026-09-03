@@ -9,6 +9,9 @@
 - [x] Signed App Bundle workflow with explicit version name and version code.
 - [x] Production HTTPS, Firebase, Maps, and signing validation.
 - [x] Engineering draft of the Data Safety inventory.
+- [x] Upload-ready 512 x 512 Play icon and 1024 x 500 feature graphic.
+- [x] Four 1080 x 1920 phone screenshots with concise English alt text.
+- [x] Automated validation for listing copy and committed graphic assets.
 
 ## Owner-provided items
 
@@ -20,9 +23,9 @@
 - [x] Provide repository-owned privacy-policy and deletion-request routes.
 - [ ] Deploy both routes and configure their final HTTPS URLs in the production
   mobile build and Play Console.
-- [ ] Export the source icon as a 512 x 512, 32-bit PNG no larger than 1024 KB.
-- [ ] Capture at least two current phone screenshots from a production-like build.
-- [ ] Create a 1024 x 500 feature graphic without misleading claims.
+- [x] Export the source icon as a 512 x 512, 32-bit PNG no larger than 1024 KB.
+- [x] Capture at least two current phone screenshots from a production-like build.
+- [x] Create a 1024 x 500 feature graphic without misleading claims.
 - [ ] Review and paste `listing-en-US.json` into the default store listing.
 - [ ] Complete Data Safety, ads, target audience, content rating, and app-access
   declarations in Play Console.

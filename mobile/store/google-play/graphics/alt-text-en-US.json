@@ -1,0 +1,9 @@
+{
+  "featureGraphic": "QueueWise queue tickets show a live position, people ahead, and estimated wait time.",
+  "phoneScreenshots": {
+    "01-home.png": "QueueWise home shows nearby businesses with live queue counts and estimated wait times.",
+    "02-business-detail.png": "Business details show queue availability, current number, services, rating, and a join action.",
+    "03-live-queue.png": "My Queue highlights the customer's number, people ahead, estimated wait, and check-in action.",
+    "04-explore.png": "Explore provides business search, category filters, and queue-length sorting controls."
+  }
+}
