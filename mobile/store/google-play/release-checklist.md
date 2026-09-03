@@ -15,7 +15,7 @@
 
 ## Owner-provided items
 
-- [ ] Merge the release-build branch and this stacked branch into `main` in order.
+- [x] Merge the release-build and stacked release branches into `main` in order.
 - [ ] Provision and smoke-test the production backend.
 - [x] Expose the configured privacy policy and external deletion page in-app.
 - [x] Delete authenticated accounts after current-password confirmation.
