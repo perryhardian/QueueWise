@@ -43,7 +43,7 @@ test('rejects missing, insecure, and credential-bearing URLs', () => {
   );
 });
 
-test('verifies liveness, readiness, and the Socket.IO handshake', async () => {
+test('verifies health, legal pages, and the Socket.IO handshake', async () => {
   const requestedUrls = [];
   const fetchImpl = async (url) => {
     requestedUrls.push(url);
@@ -53,6 +53,16 @@ test('verifies liveness, readiness, and the Socket.IO handshake', async () => {
     if (url.endsWith('/health/ready')) {
       return jsonResponse({ status: 'ready', database: 'connected' });
     }
+    if (url.endsWith('/privacy')) {
+      return legalPageResponse(
+        '<title>QueueWise privacy policy</title> external account-deletion page',
+      );
+    }
+    if (url.endsWith('/delete-account')) {
+      return legalPageResponse(
+        '<title>Delete your QueueWise account</title> data-account-deletion-form action="/api/account-deletion"',
+      );
+    }
     return textResponse(
       '0{"sid":"socket-id","upgrades":["websocket"],"pingInterval":25000,"pingTimeout":20000}',
     );
@@ -61,7 +71,7 @@ test('verifies liveness, readiness, and the Socket.IO handshake', async () => {
   const result = await verifyDeployment(
     {
       apiBaseUrl: 'https://api.queuewise.example/api',
-      socketBaseUrl: 'https://api.queuewise.example',
+      socketBaseUrl: 'https://realtime.queuewise.example',
       timeoutMs: 5000,
     },
     { fetchImpl, log: () => {} },
@@ -70,11 +80,39 @@ test('verifies liveness, readiness, and the Socket.IO handshake', async () => {
   assert.deepEqual(requestedUrls, [
     'https://api.queuewise.example/api/health',
     'https://api.queuewise.example/api/health/ready',
-    'https://api.queuewise.example/socket.io/?EIO=4&transport=polling',
+    'https://api.queuewise.example/privacy',
+    'https://api.queuewise.example/delete-account',
+    'https://realtime.queuewise.example/socket.io/?EIO=4&transport=polling',
   ]);
   assert.equal(
     result.socketHandshakeUrl,
-    'https://api.queuewise.example/socket.io/?EIO=4&transport=polling',
+    'https://realtime.queuewise.example/socket.io/?EIO=4&transport=polling',
+  );
+});
+
+test('fails when a legal page is missing security headers', async () => {
+  const fetchImpl = async (url) => {
+    if (url.endsWith('/health')) {
+      return jsonResponse({ status: 'ok' });
+    }
+    if (url.endsWith('/health/ready')) {
+      return jsonResponse({ status: 'ready', database: 'connected' });
+    }
+    return new Response(
+      '<title>QueueWise privacy policy</title> external account-deletion page',
+      { headers: { 'content-type': 'text/html' } },
+    );
+  };
+
+  await assert.rejects(
+    verifyDeployment(
+      {
+        apiBaseUrl: 'https://api.queuewise.example/api',
+        socketBaseUrl: 'https://api.queuewise.example',
+      },
+      { fetchImpl, log: () => {} },
+    ),
+    /missing the required content-security-policy header/,
   );
 });
 
@@ -106,6 +144,16 @@ test('fails when the Socket.IO endpoint is not an Engine.IO handshake', async ()
     if (url.endsWith('/health/ready')) {
       return jsonResponse({ status: 'ready', database: 'connected' });
     }
+    if (url.endsWith('/privacy')) {
+      return legalPageResponse(
+        '<title>QueueWise privacy policy</title> external account-deletion page',
+      );
+    }
+    if (url.endsWith('/delete-account')) {
+      return legalPageResponse(
+        '<title>Delete your QueueWise account</title> data-account-deletion-form action="/api/account-deletion"',
+      );
+    }
     return textResponse('<html>proxy error</html>');
   };
 
@@ -128,6 +176,16 @@ test('fails when the Engine.IO open packet is incomplete', async () => {
     }
     if (url.endsWith('/health/ready')) {
       return jsonResponse({ status: 'ready', database: 'connected' });
+    }
+    if (url.endsWith('/privacy')) {
+      return legalPageResponse(
+        '<title>QueueWise privacy policy</title> external account-deletion page',
+      );
+    }
+    if (url.endsWith('/delete-account')) {
+      return legalPageResponse(
+        '<title>Delete your QueueWise account</title> data-account-deletion-form action="/api/account-deletion"',
+      );
     }
     return textResponse('0null');
   };
@@ -153,4 +211,16 @@ function jsonResponse(value, status = 200) {
 
 function textResponse(value, status = 200) {
   return new Response(value, { status });
+}
+
+function legalPageResponse(value, status = 200) {
+  return new Response(value, {
+    status,
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'content-security-policy': "default-src 'none'; style-src 'self'",
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'DENY',
+    },
+  });
 }

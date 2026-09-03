@@ -15,6 +15,9 @@ gates.
   tests, and the production backend container build.
 - Confirmed the committed Play listing assets and release runbooks are present
   on the default branch.
+- Extended the production verifier to check the public privacy policy and
+  account-deletion page, required security headers, and deletion-form API path
+  in addition to health, database readiness, and Socket.IO connectivity.
 
 Successful CI run:
 

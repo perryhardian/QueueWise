@@ -28,6 +28,10 @@ export async function verifyDeployment(
 
   const livenessUrl = joinUrl(apiBaseUrl, 'health');
   const readinessUrl = joinUrl(apiBaseUrl, 'health/ready');
+  const apiUrl = new URL(apiBaseUrl);
+  const apiPath = apiUrl.pathname.replace(/\/$/, '');
+  const privacyPolicyUrl = joinUrl(apiUrl.origin, 'privacy');
+  const accountDeletionUrl = joinUrl(apiUrl.origin, 'delete-account');
   const socketHandshakeUrl = buildSocketHandshakeUrl(socketBaseUrl);
 
   const liveness = await requestJson(
@@ -52,6 +56,31 @@ export async function verifyDeployment(
   }
   log(`PASS readiness: ${readinessUrl}`);
 
+  await verifyLegalPage(
+    fetchImpl,
+    privacyPolicyUrl,
+    'Privacy policy',
+    [
+      '<title>QueueWise privacy policy</title>',
+      'external account-deletion page',
+    ],
+    timeoutMs,
+  );
+  log(`PASS privacy policy: ${privacyPolicyUrl}`);
+
+  await verifyLegalPage(
+    fetchImpl,
+    accountDeletionUrl,
+    'Account-deletion page',
+    [
+      '<title>Delete your QueueWise account</title>',
+      'data-account-deletion-form',
+      `action="${apiPath}/account-deletion"`,
+    ],
+    timeoutMs,
+  );
+  log(`PASS account-deletion page: ${accountDeletionUrl}`);
+
   const handshake = await requestText(
     fetchImpl,
     socketHandshakeUrl,
@@ -61,7 +90,13 @@ export async function verifyDeployment(
   validateSocketHandshake(handshake);
   log(`PASS Socket.IO handshake: ${socketHandshakeUrl}`);
 
-  return { livenessUrl, readinessUrl, socketHandshakeUrl };
+  return {
+    livenessUrl,
+    readinessUrl,
+    privacyPolicyUrl,
+    accountDeletionUrl,
+    socketHandshakeUrl,
+  };
 }
 
 function readHttpsUrl(name, rawValue) {
@@ -133,11 +168,50 @@ async function requestText(fetchImpl, url, label, timeoutMs) {
   return response.text();
 }
 
-async function request(fetchImpl, url, label, timeoutMs) {
+async function verifyLegalPage(
+  fetchImpl,
+  url,
+  label,
+  expectedMarkers,
+  timeoutMs,
+) {
+  const response = await request(fetchImpl, url, label, timeoutMs, 'text/html');
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!contentType.toLowerCase().includes('text/html')) {
+    throw new Error(`${label} did not return HTML.`);
+  }
+
+  const requiredHeaders = {
+    'content-security-policy': "default-src 'none'",
+    'x-content-type-options': 'nosniff',
+    'x-frame-options': 'DENY',
+  };
+  for (const [name, expectedValue] of Object.entries(requiredHeaders)) {
+    const value = response.headers.get(name) ?? '';
+    if (!value.toLowerCase().includes(expectedValue.toLowerCase())) {
+      throw new Error(`${label} is missing the required ${name} header.`);
+    }
+  }
+
+  const html = await response.text();
+  for (const marker of expectedMarkers) {
+    if (!html.includes(marker)) {
+      throw new Error(`${label} is missing expected QueueWise content.`);
+    }
+  }
+}
+
+async function request(
+  fetchImpl,
+  url,
+  label,
+  timeoutMs,
+  accept = 'application/json, text/plain;q=0.9',
+) {
   let response;
   try {
     response = await fetchImpl(url, {
-      headers: { accept: 'application/json, text/plain;q=0.9' },
+      headers: { accept },
       redirect: 'error',
       signal: AbortSignal.timeout(timeoutMs),
     });

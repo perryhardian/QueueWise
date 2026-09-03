@@ -77,8 +77,9 @@ and Socket.IO connections reach the same service.
 
 Do not run the demo seed against production.
 
-After the runtime is reachable, verify liveness, database readiness, and the
-Socket.IO polling handshake from `backend/`:
+After the runtime is reachable, verify liveness, database readiness, the public
+privacy and account-deletion pages, their security headers, and the Socket.IO
+polling handshake from `backend/`:
 
 ```powershell
 $env:QUEUEWISE_API_URL = 'https://api.example.com/api'
