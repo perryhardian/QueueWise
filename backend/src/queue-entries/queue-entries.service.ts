@@ -33,6 +33,7 @@ export class QueueEntriesService {
   ) {}
 
   async joinQueue(userId: string, queueId: string, _dto: JoinQueueDto) {
+    void _dto;
     const result = await this.prisma.$transaction(async (tx) => {
       const queue = await tx.queue.findUnique({
         where: { id: queueId },
@@ -61,7 +62,7 @@ export class QueueEntriesService {
         where: { id: queue.id },
         data: { nextSequence: { increment: 1 } },
       });
-      const sequenceNumber = queue.nextSequence;
+      const sequenceNumber = updatedQueue.nextSequence - 1;
       const entry = await tx.queueEntry.create({
         data: {
           queueId: queue.id,
@@ -98,6 +99,7 @@ export class QueueEntriesService {
   }
 
   async addWalkIn(userId: string, queueId: string, _dto: WalkInDto) {
+    void _dto;
     await this.queuesService.assertMerchantOwnsQueue(userId, queueId);
     const result = await this.prisma.$transaction(async (tx) => {
       const queue = await tx.queue.findUnique({ where: { id: queueId } });
@@ -109,7 +111,7 @@ export class QueueEntriesService {
         where: { id: queue.id },
         data: { nextSequence: { increment: 1 } },
       });
-      const sequenceNumber = queue.nextSequence;
+      const sequenceNumber = updatedQueue.nextSequence - 1;
       const entry = await tx.queueEntry.create({
         data: {
           queueId: queue.id,
