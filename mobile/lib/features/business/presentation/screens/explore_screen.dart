@@ -27,9 +27,7 @@ class ExploreScreen extends ConsumerWidget {
                 AppSpacing.sm,
               ),
               child: AppPageHeader(
-                eyebrow: 'FIND A PLACE',
                 title: 'Explore queues',
-                subtitle: 'Compare the wait before you leave.',
               ),
             ),
             Padding(
@@ -138,7 +136,7 @@ class ExploreScreen extends ConsumerWidget {
                             child: BusinessCard(
                               business: items[i],
                               onTap: () =>
-                                  context.go('/businesses/${items[i].id}'),
+                                  context.push('/businesses/${items[i].id}'),
                             ),
                           ),
                         ),

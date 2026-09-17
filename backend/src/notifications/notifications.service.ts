@@ -6,12 +6,16 @@ import { NotificationType, QueueEntryStatus } from '../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
 import { activeQueueEntryStatuses } from '../queues/queue-calculation.util';
 import { RegisterDeviceTokenDto } from './dto/register-device-token.dto';
+import { UnregisterDeviceTokenDto } from './dto/unregister-device-token.dto';
 
 @Injectable()
 export class NotificationsService {
   private readonly firebaseApp: App | null;
 
-  constructor(private readonly prisma: PrismaService, configService: ConfigService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    configService: ConfigService,
+  ) {
     this.firebaseApp = this.createFirebaseApp(configService);
   }
 
@@ -25,6 +29,16 @@ export class NotificationsService {
       create: { userId, token, platform },
       select: { id: true, platform: true, updatedAt: true },
     });
+  }
+
+  async unregisterDeviceToken(
+    userId: string,
+    dto: UnregisterDeviceTokenDto,
+  ): Promise<{ success: true }> {
+    await this.prisma.deviceToken.deleteMany({
+      where: { userId, token: dto.token.trim() },
+    });
+    return { success: true };
   }
 
   async notifyCustomerCalled(queueEntryId: string) {
@@ -49,14 +63,19 @@ export class NotificationsService {
       include: {
         business: true,
         entries: {
-          where: { status: { in: activeQueueEntryStatuses }, userId: { not: null } },
+          where: {
+            status: { in: activeQueueEntryStatuses },
+            userId: { not: null },
+          },
           orderBy: { sequenceNumber: 'asc' },
         },
       },
     });
     if (!queue) return;
 
-    const activeEntries = queue.entries.filter((entry) => entry.status !== QueueEntryStatus.SERVING);
+    const activeEntries = queue.entries.filter(
+      (entry) => entry.status !== QueueEntryStatus.SERVING,
+    );
     await Promise.all(
       activeEntries.map(async (entry, index) => {
         if (!entry.userId) return;
@@ -74,7 +93,13 @@ export class NotificationsService {
     );
   }
 
-  private async createAndSendOnce(input: { userId: string; queueEntryId: string; type: NotificationType; title: string; body: string }) {
+  private async createAndSendOnce(input: {
+    userId: string;
+    queueEntryId: string;
+    type: NotificationType;
+    title: string;
+    body: string;
+  }) {
     const existing = await this.prisma.notification.findFirst({
       where: {
         userId: input.userId,
@@ -99,10 +124,20 @@ export class NotificationsService {
       where: { userId: input.userId },
       select: { token: true },
     });
-    await this.sendPush(deviceTokens.map((item) => item.token), input.title, input.body, input.queueEntryId);
+    await this.sendPush(
+      deviceTokens.map((item) => item.token),
+      input.title,
+      input.body,
+      input.queueEntryId,
+    );
   }
 
-  private async sendPush(tokens: string[], title: string, body: string, queueEntryId: string) {
+  private async sendPush(
+    tokens: string[],
+    title: string,
+    body: string,
+    queueEntryId: string,
+  ) {
     if (!this.firebaseApp || tokens.length === 0) return;
 
     await getMessaging(this.firebaseApp).sendEachForMulticast({
@@ -114,8 +149,13 @@ export class NotificationsService {
 
   private createFirebaseApp(configService: ConfigService) {
     const projectId = configService.get<string>('FIREBASE_PROJECT_ID')?.trim();
-    const clientEmail = configService.get<string>('FIREBASE_CLIENT_EMAIL')?.trim();
-    const privateKey = configService.get<string>('FIREBASE_PRIVATE_KEY')?.replace(/\\n/g, '\n').trim();
+    const clientEmail = configService
+      .get<string>('FIREBASE_CLIENT_EMAIL')
+      ?.trim();
+    const privateKey = configService
+      .get<string>('FIREBASE_PRIVATE_KEY')
+      ?.replace(/\\n/g, '\n')
+      .trim();
     if (!projectId || !clientEmail || !privateKey) return null;
 
     const apps = getApps();

@@ -20,7 +20,18 @@ class QueueConfirmationScreen extends ConsumerWidget {
     final isJoining = queueState.isLoading;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Join queue')),
+      appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Back',
+          onPressed: isJoining
+              ? null
+              : () => context.canPop()
+                    ? context.pop()
+                    : context.go('/businesses/$businessId'),
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
+        title: const Text('Join queue'),
+      ),
       body: business.when(
         data: (item) {
           final queue = item.queue;
@@ -31,12 +42,7 @@ class QueueConfirmationScreen extends ConsumerWidget {
                   child: ListView(
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     children: [
-                      const AppPageHeader(
-                        eyebrow: 'FINAL STEP',
-                        title: 'Confirm your place',
-                        subtitle:
-                            'Review the live estimate before joining this queue.',
-                      ),
+                      const AppPageHeader(title: 'Confirm your place'),
                       const SizedBox(height: AppSpacing.xl),
                       Text(
                         item.name,
@@ -53,7 +59,8 @@ class QueueConfirmationScreen extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
-                          color: AppColors.ink,
+                          color: AppColors.paper2,
+                          border: Border.all(color: AppColors.rule2),
                           borderRadius: BorderRadius.circular(AppRadii.hero),
                         ),
                         child: Column(
@@ -62,13 +69,13 @@ class QueueConfirmationScreen extends ConsumerWidget {
                             Text(
                               'ESTIMATED WAIT',
                               style: Theme.of(context).textTheme.labelMedium
-                                  ?.copyWith(color: AppColors.paper3),
+                                  ?.copyWith(color: AppColors.muted),
                             ),
                             const SizedBox(height: AppSpacing.xs),
                             Text(
                               '${queue.estimatedWaitingTimeMinutes} min',
                               style: Theme.of(context).textTheme.displaySmall
-                                  ?.copyWith(color: AppColors.paper),
+                                  ?.copyWith(color: AppColors.accent),
                             ),
                             const SizedBox(height: AppSpacing.md),
                             const Divider(color: AppColors.neutral),
@@ -78,13 +85,13 @@ class QueueConfirmationScreen extends ConsumerWidget {
                                 const Icon(
                                   Icons.groups_outlined,
                                   size: 20,
-                                  color: AppColors.accentSoft,
+                                  color: AppColors.accent,
                                 ),
                                 const SizedBox(width: AppSpacing.xs),
                                 Text(
                                   '${queue.peopleWaiting} people waiting now',
                                   style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(color: AppColors.paper3),
+                                      ?.copyWith(color: AppColors.neutral),
                                 ),
                               ],
                             ),

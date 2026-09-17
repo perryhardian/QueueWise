@@ -8,13 +8,15 @@ is needed; do not create per-screen themes.
 
 - Audience: customers finding and joining queues, and merchants serving them.
 - Primary job: show the current queue state and the next useful action quickly.
-- Tone: warm, calm, utilitarian.
+- Tone: nocturnal, focused, technical.
 - Accessibility: 48 px minimum touch targets, visible focus, icon-plus-text state
   communication, and readable contrast at all supported widths.
 
 ## Genre
 
-Modern-minimal with a warm operational voice.
+Atmospheric modern-minimal with a focused operational voice. The visual DNA is
+near-black, deep green, and luminous light green; it never borrows crypto
+imagery or decorative dashboard chrome from the reference.
 
 ## Macrostructure family
 
@@ -26,21 +28,23 @@ Modern-minimal with a warm operational voice.
 
 ## Theme
 
-- `--color-paper`       `oklch(97.5% 0.010 155)`
-- `--color-paper-2`     `oklch(95% 0.014 155)`
-- `--color-paper-3`     `oklch(91% 0.018 155)`
-- `--color-ink`         `oklch(21% 0.018 155)`
-- `--color-ink-2`       `oklch(35% 0.022 155)`
-- `--color-rule`        `oklch(84% 0.018 155)`
-- `--color-rule-2`      `oklch(72% 0.024 155)`
-- `--color-muted`       `oklch(52% 0.022 155)`
-- `--color-neutral`     `oklch(42% 0.024 155)`
-- `--color-accent`      `oklch(52% 0.130 158)`
-- `--color-accent-ink`  `oklch(98% 0.008 155)`
-- `--color-focus`       `oklch(60% 0.170 158)`
+- `--color-paper`       `oklch(11.5% 0.018 150)`
+- `--color-paper-2`     `oklch(16% 0.024 150)`
+- `--color-paper-3`     `oklch(21% 0.032 150)`
+- `--color-ink`         `oklch(96% 0.012 150)`
+- `--color-ink-2`       `oklch(86% 0.020 150)`
+- `--color-rule`        `oklch(27% 0.040 150)`
+- `--color-rule-2`      `oklch(38% 0.055 150)`
+- `--color-muted`       `oklch(63% 0.025 150)`
+- `--color-neutral`     `oklch(74% 0.030 150)`
+- `--color-accent`      `oklch(89% 0.220 145)`
+- `--color-accent-soft` `oklch(25% 0.075 148)`
+- `--color-accent-ink`  `oklch(12% 0.025 150)`
+- `--color-focus`       `oklch(93% 0.150 145)`
 
-The green accent is a signal: active navigation, focus, status, and primary
-actions. Large surfaces remain paper or ink.
+The light-green accent is a signal: active navigation, focus, live status, and
+primary actions. Large surfaces stay green-black. Depth comes from surface
+lightness and fine borders rather than glow, blur, or heavy shadow.
 
 ## Typography
 
@@ -72,8 +76,9 @@ Screens use 20 px phone gutters, 32 px section breaks, and varied internal gaps.
 
 ## CTA voice
 
-- Primary: solid QueueWise green, 52 px height, 12 px radius, specific verb.
-- Secondary: paper surface with a visible neutral outline.
+- Primary: solid light green with near-black text, 52 px height, 12 px radius,
+  and a specific verb.
+- Secondary: deep-green surface with a visible neutral outline.
 - Destructive: outlined by default; red is reserved for the confirmed action.
 
 ## Per-page allowances
@@ -85,7 +90,7 @@ Screens use 20 px phone gutters, 32 px section breaks, and varied internal gaps.
 ## What pages MUST share
 
 - QueueWise brand mark and wordmark.
-- The green accent and warm green-tinted neutrals.
+- The light-green accent and nocturnal green-tinted neutrals.
 - Bricolage Grotesque display and IBM Plex Sans body typography.
 - Button/input height, radius, spacing, and state behavior.
 - Status-first hierarchy and left-aligned page headings.
@@ -106,15 +111,15 @@ See the project-root `tokens.css`, which is the portable source of truth.
 
 ```css
 @theme {
-  --color-paper: oklch(97.5% 0.010 155);
-  --color-paper-2: oklch(95% 0.014 155);
-  --color-paper-3: oklch(91% 0.018 155);
-  --color-ink: oklch(21% 0.018 155);
-  --color-ink-2: oklch(35% 0.022 155);
-  --color-rule: oklch(84% 0.018 155);
-  --color-muted: oklch(52% 0.022 155);
-  --color-accent: oklch(52% 0.130 158);
-  --color-focus: oklch(60% 0.170 158);
+  --color-paper: oklch(11.5% 0.018 150);
+  --color-paper-2: oklch(16% 0.024 150);
+  --color-paper-3: oklch(21% 0.032 150);
+  --color-ink: oklch(96% 0.012 150);
+  --color-ink-2: oklch(86% 0.020 150);
+  --color-rule: oklch(27% 0.040 150);
+  --color-muted: oklch(63% 0.025 150);
+  --color-accent: oklch(89% 0.220 145);
+  --color-focus: oklch(93% 0.150 145);
   --font-display: "Bricolage Grotesque", sans-serif;
   --font-body: "IBM Plex Sans", sans-serif;
   --spacing-md: 1rem;
@@ -131,10 +136,10 @@ See the project-root `tokens.css`, which is the portable source of truth.
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "color": {
-    "paper": { "$value": "oklch(97.5% 0.010 155)", "$type": "color" },
-    "ink": { "$value": "oklch(21% 0.018 155)", "$type": "color" },
-    "accent": { "$value": "oklch(52% 0.130 158)", "$type": "color" },
-    "focus": { "$value": "oklch(60% 0.170 158)", "$type": "color" }
+    "paper": { "$value": "oklch(11.5% 0.018 150)", "$type": "color" },
+    "ink": { "$value": "oklch(96% 0.012 150)", "$type": "color" },
+    "accent": { "$value": "oklch(89% 0.220 145)", "$type": "color" },
+    "focus": { "$value": "oklch(93% 0.150 145)", "$type": "color" }
   },
   "font": {
     "display": { "$value": "Bricolage Grotesque", "$type": "fontFamily" },
@@ -156,19 +161,19 @@ See the project-root `tokens.css`, which is the portable source of truth.
 
 ```css
 :root {
-  --background: 97.5% 0.010 155;
-  --foreground: 21% 0.018 155;
-  --card: 95% 0.014 155;
-  --card-foreground: 21% 0.018 155;
-  --primary: 52% 0.130 158;
-  --primary-foreground: 98% 0.008 155;
-  --secondary: 91% 0.018 155;
-  --secondary-foreground: 35% 0.022 155;
-  --muted: 84% 0.018 155;
-  --muted-foreground: 42% 0.024 155;
-  --border: 84% 0.018 155;
-  --input: 84% 0.018 155;
-  --ring: 60% 0.170 158;
+  --background: 11.5% 0.018 150;
+  --foreground: 96% 0.012 150;
+  --card: 16% 0.024 150;
+  --card-foreground: 96% 0.012 150;
+  --primary: 89% 0.220 145;
+  --primary-foreground: 12% 0.025 150;
+  --secondary: 21% 0.032 150;
+  --secondary-foreground: 86% 0.020 150;
+  --muted: 27% 0.040 150;
+  --muted-foreground: 74% 0.030 150;
+  --border: 27% 0.040 150;
+  --input: 27% 0.040 150;
+  --ring: 93% 0.150 145;
   --radius: 0.75rem;
 }
 ```

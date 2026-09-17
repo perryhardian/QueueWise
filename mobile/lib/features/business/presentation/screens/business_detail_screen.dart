@@ -13,7 +13,15 @@ class BusinessDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final business = ref.watch(businessDetailProvider(businessId));
     return Scaffold(
-      appBar: AppBar(title: const Text('Business details')),
+      appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Back',
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/home'),
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
+        title: const Text('Business details'),
+      ),
       body: business.when(
         data: (item) {
           final q = item.queue;
@@ -92,8 +100,11 @@ class BusinessDetailScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
-                              color: AppColors.ink,
-                              borderRadius: BorderRadius.circular(AppRadii.hero),
+                              color: AppColors.paper2,
+                              border: Border.all(color: AppColors.rule2),
+                              borderRadius: BorderRadius.circular(
+                                AppRadii.hero,
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,13 +112,13 @@ class BusinessDetailScreen extends ConsumerWidget {
                                 Text(
                                   'QUEUE STATUS',
                                   style: Theme.of(context).textTheme.labelMedium
-                                      ?.copyWith(color: AppColors.paper3),
+                                      ?.copyWith(color: AppColors.muted),
                                 ),
                                 const SizedBox(height: AppSpacing.xxs),
                                 Text(
                                   q.status.replaceAll('_', ' '),
                                   style: Theme.of(context).textTheme.titleLarge
-                                      ?.copyWith(color: AppColors.accentSoft),
+                                      ?.copyWith(color: AppColors.accent),
                                 ),
                                 const SizedBox(height: AppSpacing.md),
                                 Row(
@@ -116,14 +127,12 @@ class BusinessDetailScreen extends ConsumerWidget {
                                       child: _Stat(
                                         label: 'Now serving',
                                         value: q.currentNumber ?? '—',
-                                        inverse: true,
                                       ),
                                     ),
                                     Expanded(
                                       child: _Stat(
                                         label: 'Waiting',
                                         value: '${q.peopleWaiting}',
-                                        inverse: true,
                                       ),
                                     ),
                                     Expanded(
@@ -131,7 +140,6 @@ class BusinessDetailScreen extends ConsumerWidget {
                                         label: 'Estimate',
                                         value:
                                             '${q.estimatedWaitingTimeMinutes} min',
-                                        inverse: true,
                                       ),
                                     ),
                                   ],
@@ -201,7 +209,7 @@ class BusinessDetailScreen extends ConsumerWidget {
                   child: FilledButton.icon(
                     onPressed: q.id == null
                         ? null
-                        : () => context.go(
+                        : () => context.push(
                             '/businesses/$businessId/confirm-queue',
                           ),
                     icon: const Icon(Icons.add_rounded),
@@ -223,10 +231,9 @@ class BusinessDetailScreen extends ConsumerWidget {
 }
 
 class _Stat extends StatelessWidget {
-  const _Stat({required this.label, required this.value, this.inverse = false});
+  const _Stat({required this.label, required this.value});
   final String label;
   final String value;
-  final bool inverse;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,18 +243,18 @@ class _Stat extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: inverse ? AppColors.paper : AppColors.ink,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: AppColors.ink),
         ),
       ),
       const SizedBox(height: AppSpacing.xxs),
       Text(
         label,
         maxLines: 1,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: inverse ? AppColors.paper3 : AppColors.muted,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelSmall?.copyWith(color: AppColors.muted),
       ),
     ],
   );

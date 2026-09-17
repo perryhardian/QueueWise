@@ -48,7 +48,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final errorMessage = authState.hasError
         ? _friendlyError(authState.error)
         : null;
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       body: SafeArea(
@@ -72,18 +71,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: AppBrandMark(),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      Text(
-                        'Your place in line, without the wait.',
-                        style: textTheme.headlineLarge,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Sign in to find nearby queues, join remotely, and track your turn.',
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: AppColors.neutral,
-                        ),
                       ),
                       const SizedBox(height: AppSpacing.section),
                       if (errorMessage != null) ...[
@@ -127,13 +114,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         alignment: WrapAlignment.center,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text(
-                            'New to QueueWise?',
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: AppColors.neutral,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.xxs),
                           TextButton(
                             onPressed: isLoading
                                 ? null

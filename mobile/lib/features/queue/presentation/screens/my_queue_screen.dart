@@ -40,9 +40,7 @@ class MyQueueScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 children: [
                   AppPageHeader(
-                    eyebrow: 'LIVE POSITION',
                     title: 'My queue',
-                    subtitle: 'Your place updates automatically.',
                     trailing: IconButton.filledTonal(
                       tooltip: 'Refresh queue',
                       onPressed: () => ref
@@ -68,7 +66,8 @@ class MyQueueScreen extends ConsumerWidget {
                   ],
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.ink,
+                      color: AppColors.paper2,
+                      border: Border.all(color: AppColors.rule2),
                       borderRadius: BorderRadius.circular(AppRadii.hero),
                     ),
                     child: Padding(
@@ -79,14 +78,14 @@ class MyQueueScreen extends ConsumerWidget {
                           Text(
                             'YOUR NUMBER',
                             style: Theme.of(context).textTheme.labelMedium
-                                ?.copyWith(color: AppColors.paper3),
+                                ?.copyWith(color: AppColors.muted),
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           FittedBox(
                             child: Text(
                               entry.queueNumber,
                               style: Theme.of(context).textTheme.displayLarge
-                                  ?.copyWith(color: AppColors.paper),
+                                  ?.copyWith(color: AppColors.accent),
                             ),
                           ),
                           const SizedBox(height: AppSpacing.sm),
@@ -104,7 +103,7 @@ class MyQueueScreen extends ConsumerWidget {
                             child: Text(
                               entry.status.replaceAll('_', ' '),
                               style: Theme.of(context).textTheme.labelMedium
-                                  ?.copyWith(color: AppColors.ink),
+                                  ?.copyWith(color: AppColors.accent),
                             ),
                           ),
                         ],

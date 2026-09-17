@@ -1,9 +1,9 @@
 {
-  "date": "2026-08-28",
+  "date": "2026-09-10",
   "framework": "Flutter with Material 3 and Riverpod",
-  "font_stack": "No custom fonts before redesign",
-  "palette": "Material seed green #1E7A5F on #F7F8FA",
+  "font_stack": "Bricolage Grotesque display and IBM Plex Sans body",
+  "palette": "Nocturnal green-black surfaces with luminous light-green accent",
   "motion": "Flutter implicit and Material motion only",
-  "spacing": "Mostly raw 8/12/16/24 values",
+  "spacing": "Named 4/8/12/16/20/24/32/48 token scale",
   "design_system": "design.md"
 }

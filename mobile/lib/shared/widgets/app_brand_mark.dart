@@ -24,7 +24,8 @@ class AppBrandMark extends StatelessWidget {
             width: size,
             height: size,
             decoration: BoxDecoration(
-              color: AppColors.ink,
+              color: AppColors.accent,
+              border: Border.all(color: AppColors.focus),
               borderRadius: BorderRadius.circular(AppRadii.input),
             ),
             child: const Icon(

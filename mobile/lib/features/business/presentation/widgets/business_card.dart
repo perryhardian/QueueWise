@@ -14,7 +14,7 @@ class BusinessCard extends StatelessWidget {
       button: true,
       label: 'Open ${business.name}',
       child: Card(
-        color: AppColors.paper,
+        color: AppColors.paper2,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,

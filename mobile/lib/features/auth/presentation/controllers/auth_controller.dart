@@ -69,6 +69,18 @@ class AuthController extends AsyncNotifier<AuthUser?> {
     state = const AsyncData(null);
   }
 
+  Future<AuthUser> updateProfile({
+    required String fullName,
+    required String phoneNumber,
+  }) async {
+    final updatedUser = await _repository.updateProfile(
+      fullName: fullName,
+      phoneNumber: phoneNumber,
+    );
+    state = AsyncData(updatedUser);
+    return updatedUser;
+  }
+
   Future<void> deleteAccount({required String password}) async {
     if (state.valueOrNull == null) {
       throw StateError('No authenticated account is available.');

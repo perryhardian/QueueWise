@@ -1,8 +1,9 @@
-/* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V4
- * Hallmark · genre: modern-minimal · macrostructure: Workbench
- * design-system: design.md · designed-as-app · enrichment: none
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V5
+ * Hallmark · genre: atmospheric modern-minimal · macrostructure: Workbench
+ * design-system: design.md · studied-DNA · enrichment: none
  */
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app_tokens.dart';
@@ -10,10 +11,10 @@ import 'app_tokens.dart';
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData get light {
+  static ThemeData get dark {
     final baseTheme = ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
+      brightness: Brightness.dark,
     );
     final bodyTheme = GoogleFonts.ibmPlexSansTextTheme(baseTheme.textTheme);
     final textTheme = bodyTheme
@@ -40,20 +41,22 @@ class AppTheme {
     final colorScheme =
         ColorScheme.fromSeed(
           seedColor: AppColors.accent,
-          brightness: Brightness.light,
+          brightness: Brightness.dark,
         ).copyWith(
           primary: AppColors.accent,
           onPrimary: AppColors.accentInk,
           primaryContainer: AppColors.accentSoft,
-          onPrimaryContainer: AppColors.ink,
+          onPrimaryContainer: AppColors.accent,
           secondary: AppColors.ink2,
-          onSecondary: AppColors.accentInk,
+          onSecondary: AppColors.paper,
           secondaryContainer: AppColors.paper3,
           onSecondaryContainer: AppColors.ink,
           tertiary: AppColors.warning,
+          onTertiary: AppColors.paper,
           tertiaryContainer: AppColors.warningContainer,
           onTertiaryContainer: AppColors.ink,
           error: AppColors.error,
+          onError: AppColors.paper,
           errorContainer: AppColors.errorContainer,
           onErrorContainer: AppColors.ink,
           surface: AppColors.paper,
@@ -73,6 +76,8 @@ class AppTheme {
       textTheme: textTheme,
       scaffoldBackgroundColor: AppColors.paper,
       canvasColor: AppColors.paper,
+      focusColor: AppColors.focus.withValues(alpha: 0.20),
+      hoverColor: AppColors.accent.withValues(alpha: 0.08),
       splashFactory: InkSparkle.splashFactory,
       appBarTheme: AppBarTheme(
         centerTitle: false,
@@ -81,6 +86,11 @@ class AppTheme {
         backgroundColor: AppColors.paper,
         foregroundColor: AppColors.ink,
         titleTextStyle: textTheme.titleLarge,
+        systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.transparent,
+          systemNavigationBarColor: AppColors.paper,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
@@ -95,7 +105,7 @@ class AppTheme {
       navigationBarTheme: NavigationBarThemeData(
         height: 72,
         elevation: 0,
-        backgroundColor: AppColors.paper,
+        backgroundColor: AppColors.paper2,
         surfaceTintColor: Colors.transparent,
         indicatorColor: AppColors.accentSoft,
         iconTheme: WidgetStateProperty.resolveWith(
@@ -108,7 +118,7 @@ class AppTheme {
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => textTheme.labelSmall?.copyWith(
             color: states.contains(WidgetState.selected)
-                ? AppColors.ink
+                ? AppColors.accent
                 : AppColors.neutral,
             fontWeight: FontWeight.w600,
           ),
@@ -118,6 +128,10 @@ class AppTheme {
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(52),
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+          backgroundColor: AppColors.accent,
+          foregroundColor: AppColors.accentInk,
+          disabledBackgroundColor: AppColors.paper3,
+          disabledForegroundColor: AppColors.muted,
           textStyle: textTheme.labelLarge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.input),
@@ -154,7 +168,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.paper,
+        fillColor: AppColors.paper2,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
@@ -164,14 +178,14 @@ class AppTheme {
         errorStyle: textTheme.bodySmall?.copyWith(color: AppColors.error),
         border: _inputBorder(AppColors.rule),
         enabledBorder: _inputBorder(AppColors.rule),
-        focusedBorder: _inputBorder(AppColors.ink2),
+        focusedBorder: _inputBorder(AppColors.accent),
         errorBorder: _inputBorder(AppColors.error),
         focusedErrorBorder: _inputBorder(AppColors.error),
         disabledBorder: _inputBorder(AppColors.rule),
       ),
       chipTheme: ChipThemeData(
         side: const BorderSide(color: AppColors.rule),
-        backgroundColor: AppColors.paper,
+        backgroundColor: AppColors.paper2,
         selectedColor: AppColors.accentSoft,
         labelStyle: textTheme.labelMedium,
         shape: RoundedRectangleBorder(
@@ -185,16 +199,14 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.ink,
-        contentTextStyle: textTheme.bodyMedium?.copyWith(
-          color: AppColors.accentInk,
-        ),
+        backgroundColor: AppColors.paper3,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(color: AppColors.ink),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.input),
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.paper,
+        backgroundColor: AppColors.paper2,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.hero),
@@ -202,6 +214,31 @@ class AppTheme {
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.accent,
+      ),
+      listTileTheme: const ListTileThemeData(
+        iconColor: AppColors.neutral,
+        textColor: AppColors.ink,
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.paper2,
+        surfaceTintColor: Colors.transparent,
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? AppColors.accent
+                : AppColors.neutral,
+          ),
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? AppColors.accentSoft
+                : AppColors.paper2,
+          ),
+          side: const WidgetStatePropertyAll(
+            BorderSide(color: AppColors.rule2),
+          ),
+        ),
       ),
     );
   }

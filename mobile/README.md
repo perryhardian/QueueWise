@@ -36,6 +36,8 @@ password-confirmed in-app deletion flow. See
 policy requirements.
 The backend implementation of those public URLs is documented in
 `../PHASE_21_PUBLIC_LEGAL_PAGES.md`.
+Set `SUPPORT_EMAIL` to the inbox that should receive messages from the
+in-app Help and support page.
 
 ## Android release signing
 

@@ -11,6 +11,10 @@ abstract class AuthRepository {
     required String role,
     String? merchantDisplayName,
   });
+  Future<AuthUser> updateProfile({
+    required String fullName,
+    required String phoneNumber,
+  });
   Future<void> logout();
   Future<void> deleteAccount({required String password});
 }

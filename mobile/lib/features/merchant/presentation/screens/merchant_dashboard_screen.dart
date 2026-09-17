@@ -18,7 +18,6 @@ class MerchantDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardState = ref.watch(merchantDashboardControllerProvider);
-    final user = ref.watch(authControllerProvider).valueOrNull;
 
     return Scaffold(
       body: SafeArea(
@@ -41,9 +40,7 @@ class MerchantDashboardScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 children: [
                   AppPageHeader(
-                    eyebrow: 'LIVE OPERATIONS',
                     title: 'Serve the queue',
-                    subtitle: 'Hi, ${user?.fullName ?? 'Merchant'}',
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -304,7 +301,8 @@ class _DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.ink,
+        color: AppColors.paper2,
+        border: Border.all(color: AppColors.rule2),
         borderRadius: BorderRadius.circular(AppRadii.hero),
       ),
       child: Padding(
@@ -320,7 +318,7 @@ class _DashboardHeader extends StatelessWidget {
                     dashboard.business.name,
                     style: Theme.of(
                       context,
-                    ).textTheme.titleLarge?.copyWith(color: AppColors.paper),
+                    ).textTheme.titleLarge?.copyWith(color: AppColors.ink),
                   ),
                 ),
                 MerchantStatusChip(status: dashboard.queue.status),
@@ -331,14 +329,14 @@ class _DashboardHeader extends StatelessWidget {
               dashboard.business.address,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: AppColors.paper3),
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'NOW SERVING',
               style: Theme.of(
                 context,
-              ).textTheme.labelLarge?.copyWith(color: AppColors.paper3),
+              ).textTheme.labelLarge?.copyWith(color: AppColors.muted),
             ),
             const SizedBox(height: AppSpacing.xxs),
             FittedBox(
@@ -346,12 +344,12 @@ class _DashboardHeader extends StatelessWidget {
                 dashboard.nowServing ?? '-',
                 style: Theme.of(
                   context,
-                ).textTheme.displayMedium?.copyWith(color: AppColors.paper),
+                ).textTheme.displayMedium?.copyWith(color: AppColors.accent),
               ),
             ),
             if (actionInProgress) ...[
               const SizedBox(height: AppSpacing.sm),
-              const LinearProgressIndicator(color: AppColors.accentSoft),
+              const LinearProgressIndicator(color: AppColors.accent),
             ],
           ],
         ),

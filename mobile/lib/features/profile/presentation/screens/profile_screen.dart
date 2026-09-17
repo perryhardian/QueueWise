@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/legal/legal_config.dart';
@@ -26,16 +27,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
-            const AppPageHeader(
-              eyebrow: 'YOUR ACCOUNT',
-              title: 'Profile',
-              subtitle: 'Manage how QueueWise works for you.',
-            ),
+            const AppPageHeader(title: 'Profile'),
             const SizedBox(height: AppSpacing.xl),
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.ink,
+                color: AppColors.paper2,
+                border: Border.all(color: AppColors.rule2),
                 borderRadius: BorderRadius.circular(AppRadii.hero),
               ),
               child: Row(
@@ -50,9 +48,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       _initials(user?.fullName),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(color: AppColors.ink),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.accent,
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -63,7 +61,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         Text(
                           user?.fullName ?? 'User',
                           style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(color: AppColors.paper),
+                              ?.copyWith(color: AppColors.ink),
                         ),
                         const SizedBox(height: AppSpacing.xxs),
                         Text(
@@ -71,7 +69,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColors.paper3),
+                              ?.copyWith(color: AppColors.muted),
                         ),
                       ],
                     ),
@@ -82,19 +80,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: AppSpacing.xl),
             Text('Preferences', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: AppSpacing.xs),
-            const _ProfileAction(
-              leading: Icon(Icons.settings_outlined),
+            _ProfileAction(
+              leading: const Icon(Icons.settings_outlined),
               title: 'Account settings',
+              onTap: () => context.push('/profile/account-settings'),
             ),
             const Divider(),
-            const _ProfileAction(
-              leading: Icon(Icons.notifications_outlined),
+            _ProfileAction(
+              leading: const Icon(Icons.notifications_outlined),
               title: 'Notification settings',
+              onTap: () => context.push('/profile/notification-settings'),
             ),
             const Divider(),
-            const _ProfileAction(
-              leading: Icon(Icons.help_outline),
+            _ProfileAction(
+              leading: const Icon(Icons.help_outline),
               title: 'Help and support',
+              onTap: () => context.push('/profile/help-support'),
             ),
             const SizedBox(height: AppSpacing.xl),
             Text(

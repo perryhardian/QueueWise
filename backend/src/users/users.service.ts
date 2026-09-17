@@ -7,6 +7,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { QueueStatus, Role } from '../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
+import type { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -40,6 +41,39 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async updateMe(userId: string, dto: UpdateProfileDto) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+    if (!existingUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        fullName: dto.fullName.trim(),
+        phoneNumber: dto.phoneNumber?.trim() || null,
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        phoneNumber: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        merchant: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+    });
   }
 
   async deleteMe(userId: string, password: string): Promise<{ success: true }> {

@@ -45,7 +45,8 @@ class MerchantQueueEntryCard extends StatelessWidget {
                   height: 64,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.ink,
+                    color: AppColors.accentSoft,
+                    border: Border.all(color: AppColors.rule2),
                     borderRadius: BorderRadius.circular(AppRadii.input),
                   ),
                   child: FittedBox(
@@ -54,7 +55,7 @@ class MerchantQueueEntryCard extends StatelessWidget {
                       entry.queueNumber,
                       style: Theme.of(
                         context,
-                      ).textTheme.titleLarge?.copyWith(color: AppColors.paper),
+                      ).textTheme.titleLarge?.copyWith(color: AppColors.accent),
                     ),
                   ),
                 ),

@@ -28,7 +28,7 @@ class QueueWiseApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'QueueWise',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
+      theme: AppTheme.dark,
       scaffoldMessengerKey: appScaffoldMessengerKey,
       routerConfig: router,
     );

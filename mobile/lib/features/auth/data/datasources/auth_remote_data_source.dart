@@ -54,6 +54,20 @@ class AuthRemoteDataSource {
     return AuthUserModel.fromJson(response.data!);
   }
 
+  Future<AuthUserModel> updateProfile({
+    required String fullName,
+    required String phoneNumber,
+  }) async {
+    final response = await _dio.patch<Map<String, dynamic>>(
+      '/users/me',
+      data: {
+        'fullName': fullName,
+        'phoneNumber': phoneNumber.isEmpty ? null : phoneNumber,
+      },
+    );
+    return AuthUserModel.fromJson(response.data!);
+  }
+
   Future<void> logout(String refreshToken) async {
     await _dio.post<void>('/auth/logout', data: {'refreshToken': refreshToken});
   }

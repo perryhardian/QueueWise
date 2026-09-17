@@ -17,6 +17,7 @@ describe('UsersService account deletion', () => {
   const prisma = {
     user: {
       findUnique: jest.fn(),
+      update: jest.fn(),
       delete: jest.fn(),
     },
     queue: {
@@ -34,6 +35,31 @@ describe('UsersService account deletion', () => {
         Promise.resolve(operation(prisma)),
     );
     service = new UsersService(prisma as unknown as PrismaService);
+  });
+
+  it('updates the authenticated user profile', async () => {
+    prisma.user.findUnique.mockResolvedValue({ id: 'user-1' });
+    prisma.user.update.mockResolvedValue({
+      id: 'user-1',
+      fullName: 'Updated User',
+      email: 'user@example.com',
+      phoneNumber: null,
+      role: Role.CUSTOMER,
+    });
+
+    await expect(
+      service.updateMe('user-1', {
+        fullName: ' Updated User ',
+        phoneNumber: '',
+      }),
+    ).resolves.toMatchObject({ fullName: 'Updated User', phoneNumber: null });
+
+    expect(prisma.user.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'user-1' },
+        data: { fullName: 'Updated User', phoneNumber: null },
+      }),
+    );
   });
 
   it('rejects deletion when the account no longer exists', async () => {

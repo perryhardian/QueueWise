@@ -41,10 +41,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 child: AppBrandMark(compact: true),
               ),
               const SizedBox(height: AppSpacing.section),
-              AppPageHeader(
-                title: 'Hi, ${_firstName(user?.fullName)}.',
-                subtitle: 'See your place in line or find a queue nearby.',
-              ),
+              AppPageHeader(title: 'Hi, ${_firstName(user?.fullName)}.'),
               const SizedBox(height: AppSpacing.lg),
               _HomeQueueCard(activeQueue: activeQueue),
               const SizedBox(height: AppSpacing.section),
@@ -80,7 +77,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                             BusinessCard(
                               business: business,
                               onTap: () =>
-                                  context.go('/businesses/${business.id}'),
+                                  context.push('/businesses/${business.id}'),
                             ),
                             const SizedBox(height: AppSpacing.sm),
                           ],
@@ -115,8 +112,9 @@ class _HomeQueueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.ink,
+      color: AppColors.paper2,
       shape: RoundedRectangleBorder(
+        side: const BorderSide(color: AppColors.rule2),
         borderRadius: BorderRadius.circular(AppRadii.hero),
       ),
       child: Padding(
@@ -128,7 +126,7 @@ class _HomeQueueCard extends StatelessWidget {
           loading: () => const SizedBox(
             height: 128,
             child: Center(
-              child: CircularProgressIndicator(color: AppColors.accentInk),
+              child: CircularProgressIndicator(color: AppColors.accent),
             ),
           ),
           error: (_, _) => Column(
@@ -140,14 +138,14 @@ class _HomeQueueCard extends StatelessWidget {
                 'Queue status unavailable',
                 style: Theme.of(
                   context,
-                ).textTheme.titleLarge?.copyWith(color: AppColors.accentInk),
+                ).textTheme.titleLarge?.copyWith(color: AppColors.ink),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'Open My Queue to refresh your latest position.',
                 style: Theme.of(
                   context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.rule),
+                ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral),
               ),
               const SizedBox(height: AppSpacing.md),
               OutlinedButton.icon(
@@ -155,7 +153,7 @@ class _HomeQueueCard extends StatelessWidget {
                 icon: const Icon(Icons.confirmation_number_outlined),
                 label: const Text('Open My Queue'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.accentInk,
+                  foregroundColor: AppColors.ink,
                   side: const BorderSide(color: AppColors.rule2),
                 ),
               ),
@@ -174,16 +172,13 @@ class _QueueCardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(
-          Icons.confirmation_number_outlined,
-          color: AppColors.accentInk,
-        ),
+        const Icon(Icons.confirmation_number_outlined, color: AppColors.accent),
         const SizedBox(width: AppSpacing.xs),
         Text(
           'Your queue',
           style: Theme.of(
             context,
-          ).textTheme.titleMedium?.copyWith(color: AppColors.accentInk),
+          ).textTheme.titleMedium?.copyWith(color: AppColors.ink),
         ),
       ],
     );
@@ -204,14 +199,7 @@ class _NoActiveQueueContent extends StatelessWidget {
           'No active queue yet',
           style: Theme.of(
             context,
-          ).textTheme.headlineSmall?.copyWith(color: AppColors.accentInk),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Find a business and join before you leave home.',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.rule),
+          ).textTheme.headlineSmall?.copyWith(color: AppColors.ink),
         ),
         const SizedBox(height: AppSpacing.md),
         FilledButton.icon(
@@ -240,7 +228,7 @@ class _ActiveQueueContent extends StatelessWidget {
           entry.business?.name ?? 'Active queue',
           style: Theme.of(
             context,
-          ).textTheme.titleMedium?.copyWith(color: AppColors.rule),
+          ).textTheme.titleMedium?.copyWith(color: AppColors.neutral),
         ),
         const SizedBox(height: AppSpacing.xs),
         Row(
@@ -251,9 +239,9 @@ class _ActiveQueueContent extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   entry.queueNumber,
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    color: AppColors.accentInk,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.displaySmall?.copyWith(color: AppColors.accent),
                 ),
               ),
             ),
@@ -270,7 +258,7 @@ class _ActiveQueueContent extends StatelessWidget {
           '${entry.peopleAhead} ahead · about ${entry.estimatedWaitingTimeMinutes} min',
           style: Theme.of(
             context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.rule),
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral),
         ),
         const SizedBox(height: AppSpacing.md),
         FilledButton.icon(

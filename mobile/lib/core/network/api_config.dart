@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class ApiConfig {
   const ApiConfig._();
 
@@ -10,8 +12,12 @@ class ApiConfig {
     defaultValue: 'http://localhost:3000',
   );
 
-  static String get baseUrl => _withoutTrailingSlash(_configuredBaseUrl);
-  static String get socketUrl => _withoutTrailingSlash(_configuredSocketUrl);
+  static String get baseUrl => _withoutTrailingSlash(
+    _resolveAndroidEmulatorLoopback(_configuredBaseUrl),
+  );
+  static String get socketUrl => _withoutTrailingSlash(
+    _resolveAndroidEmulatorLoopback(_configuredSocketUrl),
+  );
 
   static void validateForRelease() {
     validateDeploymentUrls(apiBaseUrl: baseUrl, socketUrl: socketUrl);
@@ -19,6 +25,19 @@ class ApiConfig {
 
   static String _withoutTrailingSlash(String value) {
     return value.trim().replaceFirst(RegExp(r'/+$'), '');
+  }
+
+  static String _resolveAndroidEmulatorLoopback(String value) {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+      return value;
+    }
+
+    final uri = Uri.tryParse(value.trim());
+    if (uri == null || (uri.host != 'localhost' && uri.host != '127.0.0.1')) {
+      return value;
+    }
+
+    return uri.replace(host: '10.0.2.2').toString();
   }
 }
 

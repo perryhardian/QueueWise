@@ -27,9 +27,7 @@ class HistoryScreen extends ConsumerWidget {
                 AppSpacing.md,
               ),
               child: AppPageHeader(
-                eyebrow: 'PAST VISITS',
                 title: 'Queue history',
-                subtitle: 'A record of your recent queue activity.',
                 trailing: IconButton.filledTonal(
                   tooltip: 'Refresh history',
                   onPressed: () =>

@@ -104,13 +104,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         'Create your QueueWise account.',
                         style: textTheme.headlineLarge,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Choose how you’ll use the app. Join queues as a customer or manage service as a merchant.',
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: AppColors.neutral,
-                        ),
-                      ),
                       const SizedBox(height: AppSpacing.lg),
                       if (errorMessage != null) ...[
                         AuthErrorBanner(message: errorMessage),
@@ -242,7 +235,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             duration: Duration(seconds: 4),
             content: Row(
               children: [
-                Icon(Icons.check_circle_outline, color: AppColors.accentInk),
+                Icon(Icons.check_circle_outline, color: AppColors.accent),
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(

@@ -89,6 +89,17 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<AuthUser> updateProfile({
+    required String fullName,
+    required String phoneNumber,
+  }) {
+    return remoteDataSource.updateProfile(
+      fullName: fullName,
+      phoneNumber: phoneNumber,
+    );
+  }
+
+  @override
   Future<void> deleteAccount({required String password}) async {
     await remoteDataSource.deleteAccount(password: password);
     await localDataSource.clearTokens();

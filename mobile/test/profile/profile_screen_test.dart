@@ -7,6 +7,31 @@ import 'package:queuewise/features/auth/presentation/controllers/auth_controller
 import 'package:queuewise/features/profile/presentation/screens/profile_screen.dart';
 
 void main() {
+  testWidgets('profile settings actions are enabled', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authControllerProvider.overrideWith(_AuthenticatedController.new),
+        ],
+        child: MaterialApp(theme: AppTheme.dark, home: const ProfileScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    for (final title in [
+      'Account settings',
+      'Notification settings',
+      'Help and support',
+    ]) {
+      final tile = tester.widget<ListTile>(
+        find
+            .ancestor(of: find.text(title), matching: find.byType(ListTile))
+            .first,
+      );
+      expect(tile.onTap, isNotNull, reason: '$title should be tappable');
+    }
+  });
+
   testWidgets('profile exposes privacy and permanent account deletion', (
     tester,
   ) async {
@@ -15,7 +40,7 @@ void main() {
         overrides: [
           authControllerProvider.overrideWith(_AuthenticatedController.new),
         ],
-        child: MaterialApp(theme: AppTheme.light, home: const ProfileScreen()),
+        child: MaterialApp(theme: AppTheme.dark, home: const ProfileScreen()),
       ),
     );
     await tester.pumpAndSettle();

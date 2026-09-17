@@ -14,12 +14,14 @@ void main() {
       await tester.binding.setSurfaceSize(Size(width, 900));
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(theme: AppTheme.light, home: const LoginScreen()),
+          child: MaterialApp(theme: AppTheme.dark, home: const LoginScreen()),
         ),
       );
       await tester.pump();
 
-      expect(find.text('Your place in line, without the wait.'), findsOneWidget);
+      expect(find.text('Your place in line, without the wait.'), findsNothing);
+      expect(find.text('New to QueueWise?'), findsNothing);
+      expect(find.text('Create account'), findsOneWidget);
       expect(find.text('Email'), findsOneWidget);
       expect(find.text('Password'), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'Failed at ${width}px');
