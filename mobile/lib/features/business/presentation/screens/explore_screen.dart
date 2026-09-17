@@ -26,20 +26,13 @@ class ExploreScreen extends ConsumerWidget {
                 AppSpacing.lg,
                 AppSpacing.sm,
               ),
-              child: AppPageHeader(
-                title: 'Explore queues',
-              ),
+              child: AppPageHeader(title: 'Explore queues'),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Search businesses',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
                   TextField(
                     textInputAction: TextInputAction.search,
                     decoration: const InputDecoration(

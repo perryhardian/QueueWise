@@ -3,6 +3,15 @@ import 'package:go_router/go_router.dart';
 
 import '../theme/app_tokens.dart';
 
+const customerMyQueueBranchIndex = 2;
+
+bool shouldResetCustomerBranch({
+  required int selectedIndex,
+  required int currentIndex,
+}) =>
+    selectedIndex == customerMyQueueBranchIndex ||
+    selectedIndex == currentIndex;
+
 class CustomerShellScreen extends StatelessWidget {
   const CustomerShellScreen({required this.navigationShell, super.key});
 
@@ -21,7 +30,10 @@ class CustomerShellScreen extends StatelessWidget {
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           onDestinationSelected: (index) => navigationShell.goBranch(
             index,
-            initialLocation: index == navigationShell.currentIndex,
+            initialLocation: shouldResetCustomerBranch(
+              selectedIndex: index,
+              currentIndex: navigationShell.currentIndex,
+            ),
           ),
           destinations: const [
             NavigationDestination(

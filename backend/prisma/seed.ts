@@ -2,7 +2,12 @@ import * as bcrypt from 'bcrypt';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { loadEnvFile } from 'node:process';
 import { PrismaClient } from '../src/generated/prisma/client';
-import { QueueEntrySource, QueueEntryStatus, QueueStatus, Role } from '../src/generated/prisma/enums';
+import {
+  QueueEntrySource,
+  QueueEntryStatus,
+  QueueStatus,
+  Role,
+} from '../src/generated/prisma/enums';
 
 loadEnvFile();
 
@@ -12,7 +17,9 @@ if (!datasourceUrl) {
   throw new Error('DATABASE_URL is required to seed the database');
 }
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: datasourceUrl }) });
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: datasourceUrl }),
+});
 
 async function main() {
   const categories = await Promise.all(
@@ -33,7 +40,9 @@ async function main() {
     ),
   );
 
-  const categoryBySlug = new Map(categories.map((category) => [category.slug, category]));
+  const categoryBySlug = new Map(
+    categories.map((category) => [category.slug, category]),
+  );
   const passwordHash = await bcrypt.hash('password123', 12);
 
   await prisma.user.upsert({
@@ -70,6 +79,7 @@ async function main() {
     {
       name: 'ABC Barbershop',
       slug: 'barbershop',
+      checkInCode: '1111',
       address: 'Jl. Kemang Raya No. 12, Jakarta',
       latitude: -6.2607,
       longitude: 106.8169,
@@ -78,11 +88,15 @@ async function main() {
       currentNumber: 'A012',
       waiting: 3,
       average: 10,
-      services: [['Haircut', 10, 75000], ['Hair wash', 8, 35000]],
+      services: [
+        ['Haircut', 10, 75000],
+        ['Hair wash', 8, 35000],
+      ],
     },
     {
       name: 'Sehat Sentosa Clinic',
       slug: 'clinic',
+      checkInCode: '2222',
       address: 'Jl. Senopati No. 8, Jakarta',
       latitude: -6.2278,
       longitude: 106.8089,
@@ -91,11 +105,15 @@ async function main() {
       currentNumber: 'B004',
       waiting: 5,
       average: 12,
-      services: [['General consultation', 12, 150000], ['Health check', 20, 250000]],
+      services: [
+        ['General consultation', 12, 150000],
+        ['Health check', 20, 250000],
+      ],
     },
     {
       name: 'Kopi Sore Waiting List',
       slug: 'restaurant',
+      checkInCode: '3333',
       address: 'Jl. Cipete Raya No. 21, Jakarta',
       latitude: -6.2765,
       longitude: 106.7972,
@@ -104,43 +122,67 @@ async function main() {
       currentNumber: 'C021',
       waiting: 2,
       average: 15,
-      services: [['Table for 2', 15, null], ['Table for 4', 20, null]],
+      services: [
+        ['Table for 2', 15, null],
+        ['Table for 4', 20, null],
+      ],
     },
   ];
 
   for (const item of demoBusinesses) {
     const category = categoryBySlug.get(item.slug)!;
-    const business = await prisma.business.upsert({
-      where: { qrCodeToken: `demo-${item.slug}` },
-      update: {
-        name: item.name,
-        address: item.address,
-        latitude: item.latitude,
-        longitude: item.longitude,
-        rating: item.rating,
-        imageUrl: item.imageUrl,
-        categoryId: category.id,
-      },
-      create: {
+    const legacyQrCodeToken = `demo-${item.slug}`;
+    const existingBusiness = await prisma.business.findFirst({
+      where: {
         merchantId: merchant.id,
-        categoryId: category.id,
-        name: item.name,
-        description: `${item.name} demo business for QueueWise discovery.`,
-        address: item.address,
-        latitude: item.latitude,
-        longitude: item.longitude,
-        rating: item.rating,
-        imageUrl: item.imageUrl,
-        qrCodeToken: `demo-${item.slug}`,
-        openingHours: { monday: '09:00-18:00', tuesday: '09:00-18:00', wednesday: '09:00-18:00' },
+        OR: [
+          { name: item.name },
+          { qrCodeToken: legacyQrCodeToken },
+          { qrCodeToken: item.checkInCode },
+        ],
       },
     });
+    const businessData = {
+      merchantId: merchant.id,
+      categoryId: category.id,
+      name: item.name,
+      description: `${item.name} demo business for QueueWise discovery.`,
+      address: item.address,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      rating: item.rating,
+      imageUrl: item.imageUrl,
+      qrCodeToken: item.checkInCode,
+      openingHours: {
+        monday: '09:00-18:00',
+        tuesday: '09:00-18:00',
+        wednesday: '09:00-18:00',
+      },
+    };
+    const business = existingBusiness
+      ? await prisma.business.update({
+          where: { id: existingBusiness.id },
+          data: businessData,
+        })
+      : await prisma.business.create({
+          data: businessData,
+        });
 
     for (const [name, duration, price] of item.services) {
       await prisma.service.upsert({
         where: { id: `${business.id}-${name}` },
-        update: { name: String(name), estimatedDurationMinutes: Number(duration), price: price == null ? null : Number(price) },
-        create: { id: `${business.id}-${name}`, businessId: business.id, name: String(name), estimatedDurationMinutes: Number(duration), price: price == null ? null : Number(price) },
+        update: {
+          name: String(name),
+          estimatedDurationMinutes: Number(duration),
+          price: price == null ? null : Number(price),
+        },
+        create: {
+          id: `${business.id}-${name}`,
+          businessId: business.id,
+          name: String(name),
+          estimatedDurationMinutes: Number(duration),
+          price: price == null ? null : Number(price),
+        },
       });
     }
 
@@ -171,7 +213,10 @@ async function main() {
             queueNumber: `${item.currentNumber.charAt(0)}${String(index + 12).padStart(3, '0')}`,
             sequenceNumber: index,
             source: QueueEntrySource.WALK_IN,
-            status: index === 1 ? QueueEntryStatus.CHECKED_IN : QueueEntryStatus.WAITING,
+            status:
+              index === 1
+                ? QueueEntryStatus.CHECKED_IN
+                : QueueEntryStatus.WAITING,
           },
         });
       }

@@ -26,15 +26,7 @@ class HistoryScreen extends ConsumerWidget {
                 AppSpacing.lg,
                 AppSpacing.md,
               ),
-              child: AppPageHeader(
-                title: 'Queue history',
-                trailing: IconButton.filledTonal(
-                  tooltip: 'Refresh history',
-                  onPressed: () =>
-                      ref.invalidate(queueHistoryControllerProvider),
-                  icon: const Icon(Icons.refresh_rounded),
-                ),
-              ),
+              child: const AppPageHeader(title: 'Queue history'),
             ),
             Expanded(
               child: historyState.when(

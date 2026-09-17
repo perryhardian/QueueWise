@@ -40,6 +40,12 @@ three businesses with open queues, and these local test accounts:
 - Customer: `customer@queuewise.test` / `password123`
 - Merchant: `merchant@queuewise.test` / `password123`
 
+The seeded businesses use these manual check-in codes:
+
+- ABC Barbershop: `1111`
+- Sehat Sentosa Clinic: `2222`
+- Kopi Sore Waiting List: `3333`
+
 ## Compile and run the project
 
 ```bash
