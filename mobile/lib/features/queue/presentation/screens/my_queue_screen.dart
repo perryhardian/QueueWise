@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_page_header.dart';
 import '../../../../shared/widgets/state_views.dart';
+import '../../../../shared/widgets/queue_artwork.dart';
 import '../controllers/active_queue_controller.dart';
 import '../widgets/queue_stat_tile.dart';
 
@@ -20,11 +21,18 @@ class MyQueueScreen extends ConsumerWidget {
         child: queueState.when(
           data: (entry) {
             if (entry == null) {
-              return EmptyStateView(
-                title: 'No active queue',
-                icon: Icons.confirmation_number_outlined,
-                actionLabel: 'Explore queues',
-                onAction: () => context.go('/explore'),
+              return Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(24, 24, 24, 12),
+                    child: AppPageHeader(title: 'My queue'),
+                  ),
+                  Expanded(
+                    child: QueueEmptyPanel(
+                      onExplore: () => context.go('/explore'),
+                    ),
+                  ),
+                ],
               );
             }
             final canCancel =

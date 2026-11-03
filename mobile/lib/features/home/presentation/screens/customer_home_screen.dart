@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_brand_mark.dart';
+import '../../../../shared/widgets/queue_artwork.dart';
 import '../../../../shared/widgets/state_views.dart';
 import '../../../business/presentation/controllers/business_providers.dart';
 import '../../../business/presentation/widgets/business_card.dart';
@@ -17,6 +18,9 @@ class CustomerHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final nearby = ref.watch(nearbyBusinessesProvider);
     final activeQueue = ref.watch(activeQueueControllerProvider);
+    final horizontalPadding = ((MediaQuery.sizeOf(context).width - 720) / 2)
+        .clamp(AppSpacing.page, double.infinity)
+        .toDouble();
 
     return Scaffold(
       body: SafeArea(
@@ -26,10 +30,10 @@ class CustomerHomeScreen extends ConsumerWidget {
             ref.invalidate(activeQueueControllerProvider);
           },
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.page,
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding,
               AppSpacing.lg,
-              AppSpacing.page,
+              horizontalPadding,
               AppSpacing.section,
             ),
             children: [
@@ -100,6 +104,11 @@ class _HomeQueueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (activeQueue is AsyncData<ActiveQueueEntry?> &&
+        activeQueue.value == null) {
+      return const _NoActiveQueueContent();
+    }
+
     return Card(
       color: AppColors.paper2,
       shape: RoundedRectangleBorder(
@@ -179,17 +188,66 @@ class _NoActiveQueueContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const _QueueCardHeader(),
-        const SizedBox(height: AppSpacing.md),
-        FilledButton.icon(
-          onPressed: () => context.go('/explore'),
-          icon: const Icon(Icons.search),
-          label: const Text('Find a queue'),
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF1D3926), AppColors.paper2],
         ),
-      ],
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.rule2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final narrow = constraints.maxWidth < 290;
+                return Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        'Less waiting.\nMore living.',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              fontSize: narrow ? 25 : 30,
+                              height: 1.15,
+                              letterSpacing: -1.2,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                    ),
+                    const Expanded(flex: 2, child: QueueArtwork()),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => context.go('/explore'),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Find a queue'),
+                    Icon(Icons.arrow_forward_rounded, size: 20),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(color: AppColors.rule2),
+            const SizedBox(height: 16),
+            const QueueJourney(),
+          ],
+        ),
+      ),
     );
   }
 }

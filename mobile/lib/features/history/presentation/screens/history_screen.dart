@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_page_header.dart';
 import '../../../../shared/widgets/state_views.dart';
+import '../../../../shared/widgets/queue_artwork.dart';
 import '../../domain/entities/queue_history_item.dart';
 import '../controllers/queue_history_controller.dart';
 
@@ -32,9 +34,9 @@ class HistoryScreen extends ConsumerWidget {
               child: historyState.when(
                 data: (items) {
                   if (items.isEmpty) {
-                    return const EmptyStateView(
-                      title: 'No queue history yet',
-                      icon: Icons.history,
+                    return QueueEmptyPanel(
+                      archive: true,
+                      onExplore: () => context.go('/explore'),
                     );
                   }
 
