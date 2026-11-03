@@ -34,8 +34,6 @@ class HistoryScreen extends ConsumerWidget {
                   if (items.isEmpty) {
                     return const EmptyStateView(
                       title: 'No queue history yet',
-                      message:
-                          'Completed, cancelled, and no-show visits will appear here.',
                       icon: Icons.history,
                     );
                   }

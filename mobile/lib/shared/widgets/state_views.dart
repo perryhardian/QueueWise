@@ -66,7 +66,7 @@ class ErrorStateView extends StatelessWidget {
 class EmptyStateView extends StatelessWidget {
   const EmptyStateView({
     required this.title,
-    required this.message,
+    this.message,
     this.icon = Icons.search_off,
     this.actionLabel,
     this.onAction,
@@ -74,7 +74,7 @@ class EmptyStateView extends StatelessWidget {
   });
 
   final String title;
-  final String message;
+  final String? message;
   final IconData icon;
   final String? actionLabel;
   final VoidCallback? onAction;
@@ -100,7 +100,7 @@ class _StateLayout extends StatelessWidget {
     required this.iconColor,
     required this.iconBackground,
     required this.title,
-    required this.message,
+    this.message,
     this.action,
   });
 
@@ -108,7 +108,7 @@ class _StateLayout extends StatelessWidget {
   final Color iconColor;
   final Color iconBackground;
   final String title;
-  final String message;
+  final String? message;
   final Widget? action;
 
   @override
@@ -136,14 +136,16 @@ class _StateLayout extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                message,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral),
-                textAlign: TextAlign.center,
-              ),
+              if (message != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  message!,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               if (action != null) ...[
                 const SizedBox(height: AppSpacing.lg),
                 SizedBox(width: double.infinity, child: action),

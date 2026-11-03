@@ -22,8 +22,6 @@ class MyQueueScreen extends ConsumerWidget {
             if (entry == null) {
               return EmptyStateView(
                 title: 'No active queue',
-                message:
-                    'Join a business queue from Explore to track your turn.',
                 icon: Icons.confirmation_number_outlined,
                 actionLabel: 'Explore queues',
                 onAction: () => context.go('/explore'),

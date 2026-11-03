@@ -39,6 +39,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  void _backToLogin() {
+    ref.read(authControllerProvider.notifier).clearError();
+    context.go('/login');
+  }
+
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
@@ -73,7 +78,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       appBar: AppBar(
         leading: IconButton(
           tooltip: 'Back to login',
-          onPressed: isLoading ? null : () => context.go('/login'),
+          onPressed: isLoading ? null : _backToLogin,
           icon: const Icon(Icons.arrow_back),
         ),
       ),
@@ -193,9 +198,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                       const SizedBox(height: 12),
                       TextButton(
-                        onPressed: isLoading
-                            ? null
-                            : () => context.go('/login'),
+                        onPressed: isLoading ? null : _backToLogin,
                         child: const Text('Already have an account? Sign in'),
                       ),
                     ],

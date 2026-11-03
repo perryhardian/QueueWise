@@ -117,7 +117,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           TextButton(
                             onPressed: isLoading
                                 ? null
-                                : () => context.go('/register'),
+                                : () {
+                                    ref
+                                        .read(authControllerProvider.notifier)
+                                        .clearError();
+                                    context.go('/register');
+                                  },
                             child: const Text('Create account'),
                           ),
                         ],

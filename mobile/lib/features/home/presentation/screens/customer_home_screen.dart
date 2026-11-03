@@ -4,9 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_tokens.dart';
 import '../../../../shared/widgets/app_brand_mark.dart';
-import '../../../../shared/widgets/app_page_header.dart';
 import '../../../../shared/widgets/state_views.dart';
-import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../business/presentation/controllers/business_providers.dart';
 import '../../../business/presentation/widgets/business_card.dart';
 import '../../../queue/domain/entities/active_queue_entry.dart';
@@ -17,7 +15,6 @@ class CustomerHomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authControllerProvider).valueOrNull;
     final nearby = ref.watch(nearbyBusinessesProvider);
     final activeQueue = ref.watch(activeQueueControllerProvider);
 
@@ -41,8 +38,6 @@ class CustomerHomeScreen extends ConsumerWidget {
                 child: AppBrandMark(compact: true),
               ),
               const SizedBox(height: AppSpacing.section),
-              AppPageHeader(title: 'Hi, ${_firstName(user?.fullName)}.'),
-              const SizedBox(height: AppSpacing.lg),
               _HomeQueueCard(activeQueue: activeQueue),
               const SizedBox(height: AppSpacing.section),
               Row(
@@ -95,12 +90,6 @@ class CustomerHomeScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  String _firstName(String? fullName) {
-    final value = fullName?.trim();
-    if (value == null || value.isEmpty) return 'there';
-    return value.split(RegExp(r'\s+')).first;
   }
 }
 
@@ -194,13 +183,6 @@ class _NoActiveQueueContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _QueueCardHeader(),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          'No active queue yet',
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall?.copyWith(color: AppColors.ink),
-        ),
         const SizedBox(height: AppSpacing.md),
         FilledButton.icon(
           onPressed: () => context.go('/explore'),

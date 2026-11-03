@@ -28,6 +28,12 @@ class AuthController extends AsyncNotifier<AuthUser?> {
     return user;
   }
 
+  void clearError() {
+    if (state.hasError) {
+      state = AsyncData(state.valueOrNull);
+    }
+  }
+
   Future<void> login({required String email, required String password}) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(
