@@ -25,17 +25,16 @@ flutter build apk --debug
 ```
 
 Google Play listing copy, the engineering Data Safety draft, and the submission
-checklist are under `store/google-play/`. See
-`../PHASE_19_ANDROID_STORE_READINESS.md` for the Android identity and remaining
-store-owner actions.
+checklist are under `store/google-play/`. The Android application ID is
+`com.queuewise.queuewise`. Complete the submission checklist before publishing.
 
 Production builds also require public HTTPS `PRIVACY_POLICY_URL` and
 `ACCOUNT_DELETION_URL` values. The profile links to both pages and provides a
-password-confirmed in-app deletion flow. See
-`../PHASE_20_ACCOUNT_PRIVACY_CONTROLS.md` for deletion semantics and external
-policy requirements.
-The backend implementation of those public URLs is documented in
-`../PHASE_21_PUBLIC_LEGAL_PAGES.md`.
+password-confirmed in-app deletion flow. Deletion removes the account, sessions,
+push tokens, and notifications, de-identifies retained queue records, and closes
+active merchant queues before detaching business ownership.
+The backend serves `/privacy` and `/delete-account` outside the API prefix.
+See `../DEPLOYMENT.md` for public URL and privacy-contact configuration.
 Set `SUPPORT_EMAIL` to the inbox that should receive messages from the
 in-app Help and support page.
 
@@ -71,8 +70,8 @@ that performs the Android build.
 
 Release builds require HTTPS API/WebSocket URLs, Android signing, Firebase
 configuration, and the Maps key. The recommended path is the manual
-`Android release` GitHub Actions workflow documented in
-`../PHASE_18_ANDROID_RELEASE_BUILD.md`. It validates the production inputs,
+`Android release` GitHub Actions workflow. Configure its `production` environment
+as described in `../DEPLOYMENT.md`. It validates the production inputs,
 builds a signed App Bundle from `main`, uploads the bundle with a checksum, and
 removes temporary credentials from the runner.
 

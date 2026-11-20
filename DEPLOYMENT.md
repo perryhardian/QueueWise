@@ -106,10 +106,22 @@ Firebase Admin service-account values only in the backend secret manager.
 
 Create the upload keystore once and keep redundant secure backups. Configure
 the ignored `mobile/android/key.properties` file as documented in
-`mobile/README.md`. Configure the `production` GitHub environment and its
-release variables/secrets as documented in `PHASE_18_ANDROID_RELEASE_BUILD.md`.
-The environment must include `PRIVACY_POLICY_URL` and `ACCOUNT_DELETION_URL` as
-described in `PHASE_20_ACCOUNT_PRIVACY_CONTROLS.md`.
+`mobile/README.md`. Configure a GitHub environment named `production`, restricted
+to `main`, with these variables:
+
+- `PRODUCTION_API_BASE_URL`
+- `PRODUCTION_SOCKET_URL`
+- `PRIVACY_POLICY_URL`
+- `ACCOUNT_DELETION_URL`
+
+Use public HTTPS URLs for all four values. Configure these environment secrets:
+
+- `ANDROID_UPLOAD_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `FIREBASE_ANDROID_CONFIG_BASE64`
+- `GOOGLE_MAPS_API_KEY`
 
 After the release workflow is merged to `main`, use **Actions > Android
 release** to produce the signed App Bundle. Supply an Android build number that
